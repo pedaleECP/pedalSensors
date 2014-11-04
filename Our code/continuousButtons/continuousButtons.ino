@@ -16,21 +16,38 @@ int MAXPOT = 4096;
 
 int MEMORYPOTMOD = 0; // Valeur precedent de POTMOD
 int POTMOD = 0; //Valeur de la sortieddd
+<<<<<<< HEAD
 int VALUE = 0; //Valeur à rajouter au paramètre
 int Pot2Max = 10000;
 int Pot2Min = 0;
+=======
+
+int Pot2Limit = 10000;
+>>>>>>> origin/master
 
 void setup()
 {
   //ADC Configuration
   ADC->ADC_MR |= 0x80;   // DAC in free running mode.
   ADC->ADC_CR=2;         // Starts ADC conversion.
+<<<<<<< HEAD
   ADC->ADC_CHER=0xFFFF;  // Enable ADC channels 0 and 1.  
+=======
+ ADC->ADC_CHER = 0xFFFF;
+// ADC->ADC_CHER=0x1CC0;  // Enable ADC channels 0 and 1. 
+  
+  
+>>>>>>> origin/master
  
   //DAC Configuration
   analogWrite(DAC0,0);  // Enables DAC0
   analogWrite(DAC1,0);  // Enables DAC0
+<<<<<<< HEAD
   Serial.begin(57600);
+=======
+    Serial.begin(57600);
+
+>>>>>>> origin/master
 }
  
 void loop()
@@ -43,6 +60,7 @@ void loop()
   POT0=ADC->ADC_CDR[10];                 // read data from ADC10
   POT1=ADC->ADC_CDR[11];                 // read data from ADC11  
   POTMOD=ADC->ADC_CDR[0];                 // read data from ADC12 POTMOD c'est pour la lecture, POT2 va controler le son.
+<<<<<<< HEAD
   
 
   //we divide in 4 cases : 
@@ -65,6 +83,22 @@ void loop()
     else { 
        POT2 = POT2 + VALUE ;
    }
+=======
+    
+  if (((POTMOD - MEMORYPOTMOD) < -(9/10)*MAXPOT) && (POT2 < Pot2Limit)) {
+    
+    MEMORY=MEMORY+1;
+   }  else if (((POTMOD - MEMORYPOTMOD) > (9/10)*MAXPOT) && (POT2 > 0)) {
+   MEMORY = MEMORY -1 ;
+  }
+
+   MEMORYPOTMOD = POTMOD;
+   
+   POT2 = MAXPOT*MEMORY + POTMOD; //+PotSensor
+
+   if (POT2 > Pot2Limit) {
+   POT2 = Pot2Limit;
+>>>>>>> origin/master
   }
   
   
@@ -78,6 +112,7 @@ void loop()
    }
   }
   
+<<<<<<< HEAD
      
   else if ((POTMOD - MEMORYPOTMOD) > 0) {
    VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR
@@ -107,6 +142,31 @@ void loop()
    Serial.println("POT2");
    Serial.println(POT2);
    delay(100);
+=======
+  Serial.println("POTMOD: ");
+  Serial.print("\t");    // prints a tab
+  Serial.print(POTMOD);
+  Serial.print("\t");    // prints a tab  
+  Serial.println("POT2:    ... ");
+  Serial.print(POT2);
+  Serial.println("");      // prints another carriage return
+    Serial.println("mEMORY POTMOD: ");
+  Serial.print("\t");    // prints a tab
+  Serial.print(MEMORYPOTMOD);
+  
+  delay(200);
+  
+  
+  
+
+
+  
+  //Serial.println("MEMORY: ");
+  //Serial.print("\t");    // prints a tab
+  //Serial.print(MEMORY);
+  
+
+>>>>>>> origin/master
    //TODO : Add a second pot with the sensors
      
   //Add volume feature with POT2
