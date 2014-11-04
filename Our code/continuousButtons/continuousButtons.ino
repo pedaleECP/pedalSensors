@@ -10,26 +10,27 @@ int LED = 3;
 int FOOTSWITCH = 7; 
 int TOGGLE = 2; 
 
-int MAXPOT = 5;
+int MAXPOT = 4096;
 
 // Ici on teste avec un pot.
 
-int MEMORY = 0; // Nombre des tours qu'on a fait depuis le debut.
 int MEMORYPOTMOD = 0; // Valeur precedent de POTMOD
 int POTMOD = 0; //Valeur de la sortieddd
-
-int Pot2Limit = 10;
+int VALUE = 0; //Valeur à rajouter au paramètre
+int Pot2Max = 10000;
+int Pot2Min = 0;
 
 void setup()
 {
   //ADC Configuration
   ADC->ADC_MR |= 0x80;   // DAC in free running mode.
   ADC->ADC_CR=2;         // Starts ADC conversion.
-  ADC->ADC_CHER=0x1CC0;  // Enable ADC channels 0 and 1.  
+  ADC->ADC_CHER=0xFFFF;  // Enable ADC channels 0 and 1.  
  
   //DAC Configuration
   analogWrite(DAC0,0);  // Enables DAC0
   analogWrite(DAC1,0);  // Enables DAC0
+  Serial.begin(57600);
 }
  
 void loop()
@@ -41,30 +42,71 @@ void loop()
   
   POT0=ADC->ADC_CDR[10];                 // read data from ADC10
   POT1=ADC->ADC_CDR[11];                 // read data from ADC11  
-  POTMOD=ADC->ADC_CDR[12];                 // read data from ADC12 POTMOD c'est pour la lecture, POT2 va controler le son.
+  POTMOD=ADC->ADC_CDR[0];                 // read data from ADC12 POTMOD c'est pour la lecture, POT2 va controler le son.
   
 
+  //we divide in 4 cases : 
+  //the first when the button is turned clockwise (direction of increasing value) and it crosses zero
+  //the second when the button is turned anti clockwise (direction of decreasing value) and it crosses zero
+  //the third when the button is turned clockwise (direction of increasing value) and it doesn't cross zero
+  //the fourth when the button is turned anti clockwise (direction of decreasing value) and it doesn't cross zero
+  
+  //the variable POT2 is the previous value of the output
+  //the variable VALUE signifies the absolute change in the reading of potentiometer while making the turn
+  //by comparing the POT2+VALUE with the range of output, we decide the final value of the output
   
   
-  
-  if ((POTMOD – MEMORYPOTMOD < -(9/10)*MAXPOT) && (POT2 < Pot2Limit)) {
-    MEMORY=MEMORY+1;
+  if ((POTMOD - MEMORYPOTMOD) < -0.9*MAXPOT) {
+    VALUE = MAXPOT + POTMOD - MEMORYPOTMOD;//+POTSENSOR 
+    
+    if((POT2 +VALUE) > Pot2Max) {
+       POT2 = Pot2Max;
    }
-  else if ((POTMOD – MEMORYPOTMOD > (9/10)*MAXPOT) && (POT2 > 0)) {
-   MEMORY = MEMORY -1 ;
-  }
-
-   MEMORYPOTMOD = POTMOD
-   
-   POT2 = MAXPOT*MEMORY + POTMOD //+PotSensor
-
-   if (POT2 > Pot2Limit) {
-   POT2 = Pot2Limit;
+    else { 
+       POT2 = POT2 + VALUE ;
+   }
   }
   
-  if (POT2 < 0) {
-    POT2 = 0;
+  
+  else if ((POTMOD - MEMORYPOTMOD) > 0.9*MAXPOT) {
+    VALUE = - (MAXPOT) + POTMOD - MEMORYPOTMOD;//+POTSENSOR
+    if((POT2 +VALUE) < Pot2Min) {
+       POT2 = Pot2Min;
+   }
+    else { 
+       POT2 = POT2 + VALUE ;
+   }
   }
+  
+     
+  else if ((POTMOD - MEMORYPOTMOD) > 0) {
+   VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR
+    if((POT2 +VALUE) > Pot2Max) {
+       POT2 = Pot2Max;
+    }
+     else { 
+       POT2 = POT2 + VALUE ;
+    }
+   }
+  
+     
+  else if ((POTMOD - MEMORYPOTMOD) <0) {
+    VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR
+    if((POT2 + VALUE) < Pot2Min) {
+       POT2 = Pot2Min;
+    }
+     else { 
+       POT2 = POT2 + VALUE ;
+    }
+   }
+   
+   
+   MEMORYPOTMOD = POTMOD;
+   Serial.println("POTMOD");
+   Serial.println(POTMOD);
+   Serial.println("POT2");
+   Serial.println(POT2);
+   delay(100);
    //TODO : Add a second pot with the sensors
      
   //Add volume feature with POT2
