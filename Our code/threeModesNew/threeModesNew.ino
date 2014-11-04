@@ -12,6 +12,13 @@ const int STANDBY_MODE = 0;
 const int BUTTON_MODE  = 1;
 const int SENSOR_MODE  = 2;
 
+const int DELAY = 1000;
+
+const int DEBOUNCING_PROTECTION = 100000;
+
+int lastTime;
+int currentTime;
+
 int footswitch_mode = STANDBY_MODE;
 
 void setup()
@@ -27,6 +34,9 @@ void setup()
 
   // initialize serial communication (for edge (on/off) detection)
   Serial.begin(9600);
+  
+  // initialize our clock (that does not use delay() )
+  lastTime = 0;
 
   //ADC Configuration
   ADC->ADC_MR |= 0x80;   // DAC in free running mode.
@@ -48,6 +58,8 @@ void loop() {
   // It must be considered that pushing the foot switch toggles the state of FOOTSWITCH (LOW->HIGH and HIGH->LOW).
   // Using the variable footswitch_detect_last enables the comparison of FOOTSWITCH to its previous state.
   footswitch_detect = digitalRead(FOOTSWITCH);
+  // protect against debouncing by applying a small delay
+  delayMicroseconds(DEBOUNCING_PROTECTION);
 
   if (footswitch_detect != footswitch_detect_last) {
     footswitch_mode = (footswitch_mode + 1) % 3;
@@ -58,21 +70,45 @@ void loop() {
   switch (footswitch_mode) {
     case STANDBY_MODE:
       digitalWrite(LED, LOW);
+      Serial.println("Standby Mode");
+      
+      currentTime = millis();
+      while ((currentTime - lastTime) < DELAY) {
+        currentTime = millis();
+      }
+      lastTime = currentTime;
+      
       break;
 
     case BUTTON_MODE:
       digitalWrite(LED, HIGH);
-      delay(1000);
-      digitalWrite(LED, LOW);
-      delay(1000);
+      Serial.println("Button Mode");
+      
+      // insert code of the effect
+      
+      // once we insert the code for the effect, delete the following loop of delay
+      currentTime = millis();
+      while ((currentTime - lastTime) < DELAY) {
+        currentTime = millis();
+      }
+      lastTime = currentTime;
+      
       break;
 
     case SENSOR_MODE:
-      digitalWrite(LED, HIGH);
+      digitalWrite(LED, LOW);
+      Serial.println("Sensor Mode");
+      
+      currentTime = millis();
+      while ((currentTime - lastTime) < DELAY) {
+        currentTime = millis();
+      }
+      lastTime = currentTime;
+      
       break;
 
     default:
-      Serial.print("Invalid state, Pendejo");
+      Serial.println("Invalid state");
   }
 
 }
