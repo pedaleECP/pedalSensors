@@ -1,6 +1,6 @@
 /**************************************************************************
  *                                                                         *
- * ADXL345 Driver for Arduino                                              *
+ * ADXL345 Driver for Arduino adapted to be used in Arduino DUE            *
  *                                                                         *
  ***************************************************************************
  *                                                                         * 
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "Arduino.h"
-#include "ADXL345.h"
+#include "ADXL345_DUE.h"
 #include <Wire.h>
 
 #define ADXL345_DEVICE (0x53)    // ADXL345 device address
