@@ -18,6 +18,8 @@ int footswitch_mode = STANDBY_MODE;
 const int debounceDelay = 50;
 int lastDebounceTime = 0;
 
+int par1 = 0, par2 = 0, par3 = 0;
+
 void setup()
 {
   // initialize the footswitch as an input
@@ -44,10 +46,7 @@ void setup()
 }
 
 
-/*
-Program for testing the different modes. In the standby mode the LED is switched off, in the button mode the led blinks and in the sensor mode the LED is switched on.
-In the case of an indeterminate mode a text is displayed on the computer monitor.  
-*/
+
 void loop() {
   
   footswitch_detect = digitalRead(FOOTSWITCH);
@@ -62,7 +61,7 @@ void loop() {
   }
   
   footswitch_detect_last = footswitch_detect;
-  
+
  
 
   switch (footswitch_mode) {
