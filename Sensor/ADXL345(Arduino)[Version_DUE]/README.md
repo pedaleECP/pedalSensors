@@ -1,7 +1,16 @@
 
 ##Changes from pedalSensors team:
 We adapted the library to be used with ArduinoDUE
+Arduino Due should be connected as follows:
 
+ADXL345					Arduino DUE
+3.3V	-----------------------------	3.3V
+GND	-----------------------------	GND
+SCL	-----------------------------	SCL 21
+SDA	-----------------------------	SDA 20
+
+
+-----------------------------------------------
 
 
 
