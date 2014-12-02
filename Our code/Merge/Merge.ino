@@ -33,7 +33,7 @@ int footswitch_mode = STANDBY_MODE;
 const int DEBOUNCE_DELAY = 50;
 int last_debounce_time = 0;
 
-int parameter0 = 0, parameter1 = 0, parameter2 = 0;
+int parameter0 = 10, parameter1 = 15, parameter2 = 20;
 
 void setup()
 {
@@ -93,6 +93,18 @@ void loop() {
   
   footswitch_detect_last = footswitch_detect;
 
+  // Update Screen
+  for (int i=0; i<= 4*parameter0-4;i += 4) {
+    tft.fillRoundRect(i, 32, 4, 16, 0, ST7735_BLUE);
+  }
+
+  for (int i=0; i<= 4*parameter1-4;i += 4) {
+    tft.fillRoundRect(i, 64, 4, 16, 0, ST7735_BLUE);
+  }
+
+  for (int i=0; i<= 4*parameter2-4;i += 4) {
+    tft.fillRoundRect(i, 96, 4, 16, 0, ST7735_BLUE);
+  }
  
   // Check save button
   save_button_detect = digitalRead(SAVE_BUTTON);
