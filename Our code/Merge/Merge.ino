@@ -53,23 +53,17 @@ int parameter0 = MAX, parameter1 = 30, parameter2 = MIN;
 
 void setup()
 {
-  
+  Serial.begin(9600); 
   //ADC Configuration
   ADC->ADC_MR |= 0x80;   // DAC in free running mode.
   ADC->ADC_CR=2;         // Starts ADC conversion.
   ADC->ADC_CHER=0xFFFF;  // Enable all ADC channels   
   ADC->ADC_CHER = 0xFFFF;
-  // ADC->ADC_CHER=0x1CC0;  // Enable ADC channels 0 and 1. 
-  
-  //DAC Configuration
-  analogWrite(DAC0,0);  // Enables DAC0
-  analogWrite(DAC1,0);  // Enables DAC0
-  
   
   pinMode(FOOTSWITCH, INPUT);
-  pinMode(SAVE_BUTTON, INPUT);
+  // pinMode(SAVE_BUTTON, INPUT);
   pinMode(LED, OUTPUT);
-
+  
   tft.initR(INITR_BLACKTAB);
   tft.fillScreen(ST7735_BLACK);
   
@@ -84,9 +78,7 @@ void setup()
   tft.println("          P2");
   tft.println("");
   tft.println("          P3");
-  // tft.fillRoundRect(0, 32, 115, 16, 0, ST7735_BLUE);
   
-
   // record the state of the footswitch when turned on
   footswitch_detect_last = digitalRead(FOOTSWITCH);
   footswitch_detect_previous = footswitch_detect_last;
@@ -98,10 +90,9 @@ void setup()
 
 
 void loop() {
-  //Serial.println("Wenn das nicht angezeigt wird, haben wir ein Problem");
-  //checkFootSwitch();
-  //updateScreen();
-  //checkPotentiometer();
+  checkFootSwitch();
+  updateScreen();
+  checkPotentiometer();
   // checkSaveButton();
   
   
@@ -183,9 +174,9 @@ void checkPotentiometer() {
   
   
   //Valeur à rajouter au paramètre
-  int POTMOD= ADC->ADC_CDR[10];//read from pot0
+  int POTMOD0 = ADC->ADC_CDR[7]; //read from pot0
   updatePot(POT0,MEMORYPOTMOD0,POTMOD);
-  POTMOD=ADC->ADC_CDR[11]; //read from pot1
+  POTMOD=ADC->ADC_CDR[6]; //read from pot1
   updatePot(POT1,MEMORYPOTMOD1,POTMOD);
   POTMOD=ADC->ADC_CDR[0];//read from pot2
   updatePot(POT2,MEMORYPOTMOD2,POTMOD);
@@ -241,6 +232,7 @@ void updatePot(int POT,int MEMORYPOTMOD,int POTMOD)
     }
    }
    MEMORYPOTMOD=POTMOD ;
+   Serial.println(POT);
 }
   
 
