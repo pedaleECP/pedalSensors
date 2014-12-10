@@ -18,7 +18,7 @@ void loop() {
   
   // if there is bytes available coming from the serial port
 if (Serial1.available()) {
- // Serial.println("one message");
+ Serial.println("one message recieved in DUE");
 
 // set the values to the ‘incomingByte’ variable
 incomingByte = Serial1.read();
@@ -26,8 +26,7 @@ incomingByte = Serial1.read();
 // write the value to the pin 11
 Serial.print(incomingByte);
 
-}
-Serial.println();
+}//Serial.println();
 
 
 }

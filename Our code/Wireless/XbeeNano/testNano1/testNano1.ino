@@ -6,9 +6,10 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
+    //Serial.println("sending from nano");
     float a = millis();
     Serial.println(a);
+    delay(1000);
     
     
     
