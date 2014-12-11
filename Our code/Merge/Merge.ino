@@ -8,6 +8,7 @@
 int in_ADC0, in_ADC1;  //variables for 2 ADCs values (ADC0, ADC1)
 int POT0, POT1, POT2, out_DAC0, out_DAC1; //variables for 3 pots (ADC8, ADC9, ADC10)
 int MEMORYPOTMOD0 = 0, MEMORYPOTMOD1 = 0, MEMORYPOTMOD2 = 0;
+
 #define MAX_DELAY 10000
 uint16_t sDelayBuffer0[MAX_DELAY - 1];
 uint16_t sDelayBuffer1[MAX_DELAY - 1];
@@ -30,15 +31,14 @@ const int SENSOR_MODE  = 2;
 const int DEBOUNCE_DELAY = 50;
 
 const int MIN =     0;
-const int MAX = 10000;
+const int MAX =  4096;
 
 const int MIN_SCREEN =   0;
 const int MAX_SCREEN = 115;
 
-const int MAXPOT  = 4096;
-const int Pot2Max = 4096;
-const int Pot2Min = 0;
-const int Pot2Limit = 10000;
+const int MAX_POT   =  4096;
+const int MIN_POT   =     0;
+const int LIMIT_POT = 10000;
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
 
@@ -146,13 +146,13 @@ void setup()
 
 
 void loop() {
-  checkFootSwitch();
+  readFootSwitch();
   updateScreen();
-  // checkSaveButton();
+  // readSaveButton();
 
-  while((ADC->ADC_ISR & 0x1CC0)!=0x1CC0);// wait for ADC 0,1,8,9,10 conversion complete.
-  in_ADC0=ADC->ADC_CDR[7]; // read data from ADC0
-  in_ADC1=ADC->ADC_CDR[6]; 
+  while ((ADC->ADC_ISR & 0x1CC0) != 0x1CC0); // wait for ADC 0,1,8,9,10 conversion complete.
+  in_ADC0 = ADC->ADC_CDR[7]; // read data from ADC0
+  in_ADC1 = ADC->ADC_CDR[6];
 
   switch (footswitch_mode) {
     case STANDBY_MODE:
@@ -161,7 +161,7 @@ void loop() {
 
     case BUTTON_MODE:
       Serial.println("Button Mode ");
-      checkPotentiometer();
+      readPotentiometer();
       break;
 
     case SENSOR_MODE:
@@ -175,6 +175,8 @@ void loop() {
 
 }
 
+
+
 void testdrawtext(char *text, uint16_t color) {
   tft.setCursor(0, 0);
   tft.setTextColor(color);
@@ -182,7 +184,7 @@ void testdrawtext(char *text, uint16_t color) {
   tft.print(text);
 }
 
-void checkFootSwitch() {
+void readFootSwitch() {
   footswitch_detect = digitalRead(FOOTSWITCH);
 
   if (footswitch_detect != footswitch_detect_last) {
@@ -198,7 +200,7 @@ void checkFootSwitch() {
 }
 
 
-void checkSaveButton() {
+void readSaveButton() {
   save_button_detect = digitalRead(SAVE_BUTTON);
 
   if (save_button_detect == HIGH) {
@@ -225,13 +227,7 @@ void checkSaveButton() {
   }
 }
 
-void checkPotentiometer() {
-
-
-  in_ADC0 = ADC->ADC_CDR[7];             // read data from ADC0
-  in_ADC1 = ADC->ADC_CDR[6];             // read data from ADC1
-
-
+void readPotentiometer() {
   //Valeur à rajouter au paramètre
   int POTMOD0 = ADC->ADC_CDR[2]; //read from pot0
   POT0 = updatePot(POT0, MEMORYPOTMOD0, POTMOD0);
@@ -246,52 +242,43 @@ void checkPotentiometer() {
   POT2 = updatePot(POT2, MEMORYPOTMOD2, POTMOD2);
   p2 = POT2;
   MEMORYPOTMOD2 = POTMOD2;
-
-
-  //read all three potentiometeres
-
 }
+
 
 int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
   int VALUE = 0;
-  if ((POTMOD - MEMORYPOTMOD) < -0.9 * MAXPOT) {
-    VALUE = MAXPOT + POTMOD - MEMORYPOTMOD;//+POTSENSOR
+  if ((POTMOD - MEMORYPOTMOD) < -0.9 * MAX_POT) {
+    VALUE = MAX_POT + POTMOD - MEMORYPOTMOD;//+POTSENSOR
 
-    if ((POT + VALUE) > Pot2Limit) {
-      POT = Pot2Limit;
+    if ((POT + VALUE) > LIMIT_POT) {
+      POT = LIMIT_POT;
     }
     else {
       POT = POT + VALUE ;
     }
   }
-
-
-  else if ((POTMOD - MEMORYPOTMOD) > 0.9 * MAXPOT) {
-    VALUE = - (MAXPOT) + POTMOD - MEMORYPOTMOD;//+POTSENSOR
-    if ((POT + VALUE) < Pot2Min) {
-      POT = Pot2Min;
+  else if ((POTMOD - MEMORYPOTMOD) > 0.9 * MAX_POT) {
+    VALUE = - (MAX_POT) + POTMOD - MEMORYPOTMOD;//+POTSENSOR
+    if ((POT + VALUE) < MIN_POT) {
+      POT = MIN_POT;
     }
     else {
       POT = POT + VALUE ;
     }
   }
-
-
   else if ((POTMOD - MEMORYPOTMOD) > 0) {
     VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR
-    if ((POT + VALUE) > Pot2Limit) {
-      POT = Pot2Limit;
+    if ((POT + VALUE) > LIMIT_POT) {
+      POT = LIMIT_POT;
     }
     else {
       POT = POT + VALUE ;
     }
   }
-
-
   else if ((POTMOD - MEMORYPOTMOD) < 0) {
     VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR
-    if ((POT + VALUE) < Pot2Min) {
-      POT = Pot2Min;
+    if ((POT + VALUE) < MIN_POT) {
+      POT = MIN_POT;
     }
     else {
       POT = POT + VALUE ;
@@ -412,9 +399,9 @@ void readAngles() {
     Serial.println("");
 
     // Writing the angles into the global variables
-    p0 = angles[0]*4096/360;
-    p1 = angles[1]*4096/360;
-    p2 = angles[2]*4096/360;
+    p0 = angles[0] * 4096 / 360;
+    p1 = angles[1] * 4096 / 360;
+    p2 = angles[2] * 4096 / 360;
   }
 }
 
@@ -463,18 +450,3 @@ void TC4_Handler() //Interrupt at 44.1KHz rate (every 22.6us)
   dacc_set_channel_selection(DACC_INTERFACE, 1); //select DAC channel 1
   dacc_write_conversion_data(DACC_INTERFACE, out_DAC1);//write on DAC
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
