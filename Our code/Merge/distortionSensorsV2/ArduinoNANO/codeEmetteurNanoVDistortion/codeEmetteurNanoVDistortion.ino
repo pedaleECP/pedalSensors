@@ -1,4 +1,5 @@
-/* Code pour l'emetteur des angles d'Euler*/
+/* Code pour l'emetteur des angles Yaw, Pitch and Roll
+See http://en.wikipedia.org/wiki/Aircraft_principal_axes*/
 
 
 
@@ -62,7 +63,7 @@ void loop() {
       Serial.print(" | ");
       Serial.print(angles[1]);
       Serial.print(" | ");
-      Serial.print(angles[2]);*/
+      Serial.print(angles[2]);
       /*
       Serial.print(" | ");
        Serial.print(accelMAX[0]);
@@ -73,7 +74,7 @@ void loop() {
       //Serial.println();
       
     
-      envoyeAngles(angles[0],angles[1],angles[2]);    
+      envoyeAngles(angles[1],angles[0],angles[2]);    
       //Serial.println();
       
      /* Serial.print(angles[0] +180);
