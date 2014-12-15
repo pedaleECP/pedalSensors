@@ -4,17 +4,15 @@
 #include <SPI.h>
 
 
+int upper_threshold, lower_threshold;
+
+
+
+
 
 int in_ADC0, in_ADC1;  //variables for 2 ADCs values (ADC0, ADC1)
 int pot0, pot1, pot2, out_DAC0, out_DAC1; //variables for 3 pots (ADC8, ADC9, ADC10)
 int pot0_mod_old = 0, pot1_mod_old = 0, pot2_mod_old = 0;
-
-#define MAX_DELAY 10000
-uint16_t sDelayBuffer0[MAX_DELAY - 1];
-uint16_t sDelayBuffer1[MAX_DELAY - 1];
-unsigned int write_pt = 0;
-unsigned int read_pt_A = 0, read_pt_B = MAX_DELAY / 2;
-unsigned int Delay_Depth, increment, divider = 0, buffer0, buffer1;
 
 const int LED         = 3;
 const int FOOTSWITCH  = 7;
@@ -41,7 +39,7 @@ const int MAX_POT   =  4096;
 const int LIMIT_POT = 10000;
 
 const int MIN_SENSOR =   0;
-const int MAX_SENSOR = 360;
+const int MAX_SENSOR = 180;
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
 
@@ -79,28 +77,10 @@ int16_t mask;
 
 void setup()
 {
-  //turn on the timer clock in the power management controller
-  pmc_set_writeprotect(false);
-  pmc_enable_periph_clk(ID_TC4);
-
-  //we want wavesel 01 with RC
-  TC_Configure(TC1, 1, TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK2);
-  TC_SetRC(TC1, 1, 238); // sets <> 44.1 Khz interrupt rate 109
-  TC_Start(TC1, 1);
-
-  // enable timer interrupts on the timer
-  TC1->TC_CHANNEL[1].TC_IER = TC_IER_CPCS;
-  TC1->TC_CHANNEL[1].TC_IDR = ~TC_IER_CPCS;
-  //Enable the interrupt in the nested vector interrupt controller
-  //TC4_IRQn where 4 is the timer number * timer channels (3) + the channel number
-  //(=(1*3)+1) for timer1 channel1
-  NVIC_EnableIRQ(TC4_IRQn);
-
   //ADC Configuration
   ADC->ADC_MR |= 0x80;   // DAC in free running mode.
   ADC->ADC_CR = 2;       // Starts ADC conversion.
   ADC->ADC_CHER = 0xFFFF; // Enable all ADC channels
-  ADC->ADC_CHER = 0xFFFF;
 
   //DAC Configuration
   analogWrite(DAC0, 0); // Enables DAC0
@@ -153,8 +133,12 @@ void loop() {
   // readSaveButton();
 
   while ((ADC->ADC_ISR & 0x1CC0) != 0x1CC0); // wait for ADC 0,1,8,9,10 conversion complete.
-  in_ADC0 = ADC->ADC_CDR[7]; // read data from ADC0
-  in_ADC1 = ADC->ADC_CDR[6];
+  in_ADC0 = ADC->ADC_CDR[7];                 // read data from ADC0
+  in_ADC1 = ADC->ADC_CDR[6];                 // read data from ADC1
+
+  // POT0=ADC->ADC_CDR[10];                 // read data from ADC8
+  // POT1=ADC->ADC_CDR[11];                 // read data from ADC9
+  // POT2=ADC->ADC_CDR[12];                 // read data from ADC10
 
   switch (footswitch_mode) {
     case STANDBY_MODE:
@@ -174,6 +158,25 @@ void loop() {
     default:
       Serial.print("Invalid state ");
   }
+  
+  upper_threshold=map(p0,0,4095,4095,2047);
+  lower_threshold=map(p0,0,4095,0000,2047);
+  
+  if(in_ADC0>=upper_threshold) in_ADC0=upper_threshold;
+  else if(in_ADC0<lower_threshold)  in_ADC0=lower_threshold;
+ 
+  if(in_ADC1>=upper_threshold) in_ADC1=upper_threshold;
+  else if(in_ADC1<lower_threshold)  in_ADC1=lower_threshold;
+ 
+  //adjust the volume with POT2
+  out_DAC0=map(in_ADC0,0,4095,1,p2);
+  out_DAC1=map(in_ADC1,0,4095,1,p2);
+ 
+  //Write the DACs
+  dacc_set_channel_selection(DACC_INTERFACE, 0);          //select DAC channel 0
+  dacc_write_conversion_data(DACC_INTERFACE, out_DAC0);   //write on DAC
+  dacc_set_channel_selection(DACC_INTERFACE, 1);          //select DAC channel 1
+  dacc_write_conversion_data(DACC_INTERFACE, out_DAC1);   //write on DAC
 
 }
 
@@ -233,18 +236,18 @@ void readPotentiometer() {
   int pot0_mod = ADC->ADC_CDR[2]; //read from pot0
   pot0 = updatePot(pot0, pot0_mod_old, pot0_mod);
   pot0_mod_old = pot0_mod;
-  
+
   int pot1_mod = ADC->ADC_CDR[1]; //read from pot1
   pot1 = updatePot(pot1, pot1_mod_old, pot1_mod);
   pot1_mod_old = pot1_mod;
-  
+
   int pot2_mod = ADC->ADC_CDR[0]; //read from pot2
   pot2 = updatePot(pot2, pot2_mod_old, pot2_mod);
   pot2_mod_old = pot2_mod;
-  
-  p0 = map(pot0,MIN_POT,LIMIT_POT,MIN,MAX);
-  p1 = map(pot1,MIN_POT,LIMIT_POT,MIN,MAX);
-  p2 = map(pot2,MIN_POT,LIMIT_POT,MIN,MAX);
+
+  p0 = map(pot0, MIN_POT, LIMIT_POT, MIN, MAX);
+  p1 = map(pot1, MIN_POT, LIMIT_POT, MIN, MAX);
+  p2 = map(pot2, MIN_POT, LIMIT_POT, MIN, MAX);
 }
 
 
@@ -296,29 +299,29 @@ void updateScreen() {
     last_update_time = millis();
 
     if (p0_old < p0) {
-      tft.fillRoundRect(MIN_SCREEN, 32, map(p0,MIN,MAX,MIN_SCREEN,MAX_SCREEN), 16, 0, ST7735_BLUE);
+      tft.fillRoundRect(MIN_SCREEN, 32, map(p0, MIN, MAX, MIN_SCREEN, MAX_SCREEN), 16, 0, ST7735_BLUE);
     }
     if (p0_old > p0) {
-      tft.fillRoundRect(map(p0,MIN,MAX,MIN_SCREEN,MAX_SCREEN), 32, map(p0,MIN,MAX,MAX_SCREEN,MIN_SCREEN), 16, 0, ST7735_WHITE);
+      tft.fillRoundRect(map(p0, MIN, MAX, MIN_SCREEN, MAX_SCREEN), 32, map(p0, MIN, MAX, MAX_SCREEN, MIN_SCREEN), 16, 0, ST7735_WHITE);
     }
 
     p0_old = p0;
 
 
     if (p1_old < p1) {
-      tft.fillRoundRect(MIN_SCREEN, 64, map(p1,MIN,MAX,MIN_SCREEN,MAX_SCREEN), 16, 0, ST7735_BLUE);
+      tft.fillRoundRect(MIN_SCREEN, 64, map(p1, MIN, MAX, MIN_SCREEN, MAX_SCREEN), 16, 0, ST7735_BLUE);
     }
     if (p1_old > p1) {
-      tft.fillRoundRect(map(p1,MIN,MAX,MIN_SCREEN,MAX_SCREEN), 64, map(p1,MIN,MAX,MAX_SCREEN,MIN_SCREEN), 16, 0, ST7735_WHITE);
+      tft.fillRoundRect(map(p1, MIN, MAX, MIN_SCREEN, MAX_SCREEN), 64, map(p1, MIN, MAX, MAX_SCREEN, MIN_SCREEN), 16, 0, ST7735_WHITE);
     }
 
     p1_old = p1;
 
     if (p2_old < p2) {
-      tft.fillRoundRect(MIN_SCREEN, 96, map(p2,MIN,MAX,MIN_SCREEN,MAX_SCREEN), 16, 0, ST7735_BLUE);
+      tft.fillRoundRect(MIN_SCREEN, 96, map(p2, MIN, MAX, MIN_SCREEN, MAX_SCREEN), 16, 0, ST7735_BLUE);
     }
     if (p2_old > p2) {
-      tft.fillRoundRect(map(p2,MIN,MAX,MIN_SCREEN,MAX_SCREEN), 96, map(p2,MIN,MAX,MAX_SCREEN,MIN_SCREEN), 16, 0, ST7735_WHITE);
+      tft.fillRoundRect(map(p2, MIN, MAX, MIN_SCREEN, MAX_SCREEN), 96, map(p2, MIN, MAX, MAX_SCREEN, MIN_SCREEN), 16, 0, ST7735_WHITE);
     }
 
     p2_old = p2;
@@ -399,54 +402,10 @@ void readAngles() {
     Serial.println("");
 
     // Writing the angles into the global variables
-    p0 = map(angles[0],MIN_SENSOR,MAX_SENSOR,MIN,MAX);
-    p1 = map(angles[1],MIN_SENSOR,MAX_SENSOR,MIN,MAX);
-    p2 = map(angles[2],MIN_SENSOR,MAX_SENSOR,MIN,MAX);
+    p0 = map(angles[0], MIN_SENSOR, MAX_SENSOR, MIN, MAX);
+    p1 = map(angles[1], MIN_SENSOR, MAX_SENSOR, MIN, MAX);
+    p2 = map(angles[2], MIN_SENSOR, MAX_SENSOR, MIN, MAX);
   }
 }
 
 
-void TC4_Handler() //Interrupt at 44.1KHz rate (every 22.6us)
-{
-  TC_GetStatus(TC1, 1); //Clear status interrupt to be fired again.
-  //Store current readings
-  sDelayBuffer0[write_pt] = in_ADC0;
-  sDelayBuffer1[write_pt] = in_ADC1;
-  //Adjust Delay Depth based in pot2 position.
-  Delay_Depth = MAX_DELAY - 1;
-  //Increse/reset delay counter.
-  write_pt++;
-  if (write_pt >= Delay_Depth) write_pt = 0;
-  out_DAC0 = ((sDelayBuffer0[read_pt_A]));
-  out_DAC1 = ((sDelayBuffer1[read_pt_B]));
-  if (p0 > 2700)
-  {
-    read_pt_A = read_pt_A + 2;
-    read_pt_B = read_pt_B + 2;
-  }
-  else if (p0 > 1350)
-  {
-    read_pt_A = read_pt_A + 1;
-    read_pt_B = read_pt_B + 1;
-  }
-  else
-  {
-    divider++;
-    if (divider >= 2)
-    {
-      read_pt_A = read_pt_A + 1;
-      read_pt_B = read_pt_B + 1;
-      divider = 0;
-    }
-  }
-  if (read_pt_A >= Delay_Depth) read_pt_A = 0;
-  if (read_pt_B >= Delay_Depth) read_pt_B = 0;
-  //Add volume control with pot2
-  out_DAC0 = map(out_DAC0, 0, 4095, 1, p2);
-  out_DAC1 = map(out_DAC1, 0, 4095, 1, p2);
-  //Write the DACs
-  dacc_set_channel_selection(DACC_INTERFACE, 0); //select DAC channel 0
-  dacc_write_conversion_data(DACC_INTERFACE, out_DAC0);//write on DAC
-  dacc_set_channel_selection(DACC_INTERFACE, 1); //select DAC channel 1
-  dacc_write_conversion_data(DACC_INTERFACE, out_DAC1);//write on DAC
-}
