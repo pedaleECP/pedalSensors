@@ -22,7 +22,7 @@ const int MAX_SCREEN = 115;
 
 const int MIN_POT     =        0;
 const int MAX_POT_MOD =     4096;
-const int MAX_POT     = 4 * 4096;
+const int MAX_POT     =     4096;
 
 const int MIN_SENSOR =   0;
 const int MAX_SENSOR = 180;
@@ -186,7 +186,7 @@ void distortion() {
   if (in_ADC1 >= upper_threshold) in_ADC1 = upper_threshold;
   else if (in_ADC1 < lower_threshold)  in_ADC1 = lower_threshold;
 
-  //adjust the volume with POT2
+  //adjust the volume with p2
   out_DAC0 = map(in_ADC0, 0, 4095, 1, p2);
   out_DAC1 = map(in_ADC1, 0, 4095, 1, p2);
 
@@ -249,7 +249,7 @@ void readSaveButton() {
         p1_saved = p1;
         p2_saved = p2;
       }
-      else {
+      else if (pressTime > DEBOUNCE_DELAY) {
         p0 = p0_saved;
         p1 = p1_saved;
         p2 = p2_saved;
@@ -363,7 +363,7 @@ void updateScreen() {
       
       switch (effect) {
           case DISTORTION:
-            infoNr = 5;
+            infoNr = 6;
             break;
       }
         
@@ -448,7 +448,6 @@ int16_t assembleInt(byte byte1, byte byte2) {
 void readAngles() {
   for (int i = 0; i < 3; i++) {
     while (!Serial1.available()) {
-
       Serial.println("----Im waiting111111-");
     }
 
