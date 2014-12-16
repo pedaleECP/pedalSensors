@@ -14,7 +14,6 @@
         * Adafruit_GFX
         * SPI.h
         * EEPROM.h */
-
 // Libraries
 #include "EEPROM.h"                             //
 #include <Adafruit_GFX.h>                       // Core graphics library
@@ -277,7 +276,7 @@ void readSaveButton() {
 }
 
 void readPotentiometer() {
-  //Value to be added to previous values of parameters
+  
   int POTMOD0 = ADC->ADC_CDR[2];                        //reading first potentiometer
   POT0 = updatePot(POT0, MEMORYPOTMOD0, POTMOD0);       //update first parameter using current reading of potentiometer
   p0 = POT0;                                            //update globally
@@ -295,8 +294,8 @@ void readPotentiometer() {
 }
 
 
-int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {  //update the given parameter
-  int VALUE = 0;
+int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {   //update the given parameter
+  int VALUE = 0;                                         //Value to be added to previous values of parameters
   if ((POTMOD - MEMORYPOTMOD) < -0.9 * MAX_POT) {        // case of more than one complete turn in the positive direction
     VALUE = MAX_POT + POTMOD - MEMORYPOTMOD;
 
