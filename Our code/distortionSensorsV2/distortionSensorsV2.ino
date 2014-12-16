@@ -111,7 +111,7 @@ void setup()
 
   // We are going to read from the FootSwitch to make our 3 modes.
 
-  pinMode(FOOTSWITCH, INPUT);       // Enalbles to read from the footswitch
+  pinMode(FOOTSWITCH, INPUT);       // Enables to read from the footswitch
   // pinMode(SAVE_BUTTON, INPUT);
   pinMode(LED, OUTPUT);
 
@@ -128,7 +128,8 @@ void setup()
   tft.initR(INITR_BLACKTAB);
   tft.fillScreen(ST7735_BLACK);
 
-  tft.setRotation(-1);
+// Here we set the screen parameters: orientation, text size, color and text display
+  tft.setRotation(-1);             
   tft.setTextSize(2);
   tft.fillScreen(ST7735_WHITE);
   tft.setTextColor(ST7735_RED);
@@ -147,8 +148,8 @@ void setup()
 
 
   // Initialize the Serial ports for message transmissions
-  Serial.begin(57600);                   //Inicialize the port for comunication with the PC to send messages useful for coding (Serial)
-  Serial1.begin(57600);                  //Inicialize the port for comunication with the XBee (Serial1)
+  Serial.begin(57600);                   //Initialize the port for comunication with the PC to send messages useful for coding (Serial)
+  Serial1.begin(57600);                  //Initialize the port for comunication with the XBee (Serial1)
 
   // From XBee
   lastByte = (byte)0;     // We inicialize the lastBythe with 0 so it can make its first comparison.
@@ -276,27 +277,28 @@ void readSaveButton() {
 }
 
 void readPotentiometer() {
-  //Valeur à rajouter au paramètre
-  int POTMOD0 = ADC->ADC_CDR[2]; //read from pot0
-  POT0 = updatePot(POT0, MEMORYPOTMOD0, POTMOD0);
-  p0 = POT0;
-  MEMORYPOTMOD0 = POTMOD0;
+  //Value to be added to previous values of parameters
+  int POTMOD0 = ADC->ADC_CDR[2];                        //reading first potentiometer
+  POT0 = updatePot(POT0, MEMORYPOTMOD0, POTMOD0);       //update first parameter using current reading of potentiometer
+  p0 = POT0;                                            //update globally
+  MEMORYPOTMOD0 = POTMOD0;                              //now the potentiometer reading becomes the 'previous' reading
   //Serial.println(p0);
-  int POTMOD1 = ADC->ADC_CDR[1]; //read from pot1
-  POT1 = updatePot(POT1, MEMORYPOTMOD1, POTMOD1);
-  p1 = POT1;
-  MEMORYPOTMOD1 = POTMOD1;
-  int POTMOD2 = ADC->ADC_CDR[0]; //read from pot2
-  POT2 = updatePot(POT2, MEMORYPOTMOD2, POTMOD2);
-  p2 = POT2;
-  MEMORYPOTMOD2 = POTMOD2;
+  int POTMOD1 = ADC->ADC_CDR[1]; //read from pot1       //reading second potentiometer
+  POT1 = updatePot(POT1, MEMORYPOTMOD1, POTMOD1);       //update second parameter using current reading of potentiometer
+  p1 = POT1;                                            //update globally
+  MEMORYPOTMOD1 = POTMOD1;                              //now the potentiometer reading becomes the 'previous' reading
+  
+  int POTMOD2 = ADC->ADC_CDR[0]; //read from pot2       //reading third potentiometer
+  POT2 = updatePot(POT2, MEMORYPOTMOD2, POTMOD2);       //update third parameter using current reading of potentiometer
+  p2 = POT2;                                            //update globally
+  MEMORYPOTMOD2 = POTMOD2;                              //now the potentiometer reading becomes the 'previous' reading
 }
 
 
-int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
+int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {  //update the given parameter
   int VALUE = 0;
-  if ((POTMOD - MEMORYPOTMOD) < -0.9 * MAX_POT) {
-    VALUE = MAX_POT + POTMOD - MEMORYPOTMOD;//+POTSENSOR
+  if ((POTMOD - MEMORYPOTMOD) < -0.9 * MAX_POT) {        // case of more than one complete turn in the positive direction
+    VALUE = MAX_POT + POTMOD - MEMORYPOTMOD;
 
     if ((POT + VALUE) > LIMIT_POT) {
       POT = LIMIT_POT;
@@ -305,8 +307,8 @@ int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
       POT = POT + VALUE ;
     }
   }
-  else if ((POTMOD - MEMORYPOTMOD) > 0.9 * MAX_POT) {
-    VALUE = - (MAX_POT) + POTMOD - MEMORYPOTMOD;//+POTSENSOR
+  else if ((POTMOD - MEMORYPOTMOD) > 0.9 * MAX_POT) {   // case of more than one complete turn in the negative direction
+    VALUE = - (MAX_POT) + POTMOD - MEMORYPOTMOD;
     if ((POT + VALUE) < MIN_POT) {
       POT = MIN_POT;
     }
@@ -314,8 +316,8 @@ int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
       POT = POT + VALUE ;
     }
   }
-  else if ((POTMOD - MEMORYPOTMOD) > 0) {
-    VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR
+  else if ((POTMOD - MEMORYPOTMOD) > 0) {               //case of less than one complete turn in the positive direction
+    VALUE = POTMOD - MEMORYPOTMOD;
     if ((POT + VALUE) > LIMIT_POT) {
       POT = LIMIT_POT;
     }
@@ -323,7 +325,7 @@ int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
       POT = POT + VALUE ;
     }
   }
-  else if ((POTMOD - MEMORYPOTMOD) < 0) {
+  else if ((POTMOD - MEMORYPOTMOD) < 0) {               //case of less than one complete turn in the negative direction
     VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR
     if ((POT + VALUE) < MIN_POT) {
       POT = MIN_POT;
