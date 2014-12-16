@@ -49,12 +49,12 @@ void loop() {
       //sixDOF.getValues(accel);              //Si jamais on a besoin des accelerations
       sixDOF.getYawPitchRoll(angles);        //On a choisi d'utiliser ces angles car sont plus intuitives dans le mouvement
       
-      angles[0]=angles[0]+90;                // Comme l'angle va de -90 a +90 on le change pour etre de 0 a 180
+      angles[0]=abs(angles);                // Comme l'angle va de -180 a +180 on le change pour etre de 0 --- 150--180--150--0 etc...
       
       //Mais en fait l'angle Yaw va de -180 jusqu'a +180, donc on va se restrindre a la plage 0 180.
       //TODO: Take advantaje of this large angle.
-      if (angles[0]>180){angles[0]=180;}
-      if (angles[0]<0){angles[0]=0;}
+     // if (angles[0]>180){angles[0]=180;}
+     // if (angles[0]<0){angles[0]=0;}
       
       angles[1]=angles[1]+90;              // Comme l'angle va de -90 a +90 on le change pour etre de 0 a 180
       angles[2]=angles[2]+90;              // Comme l'angle va de -90 a +90 on le change pour etre de 0 a 180
@@ -63,12 +63,12 @@ void loop() {
       //Si on a besoin de voir les angles qu'on envoie, on peut les afficher sur l'ecran de l'ordinateur
       //Mais il y aura des problemes dans les messages recoit par la pedale: L'ordinateur et le Xbee utilisent le meme port serial de l'arduino nano (unique)
       
-            /* Serial.print(angles[0]);
+             Serial.print(angles[0]);
               Serial.print(" | ");
               Serial.print(angles[1]);
               Serial.print(" | ");
               Serial.print(angles[2]);
-              Serial.println();*/
+              Serial.println();
               
     
       envoyeAngles(angles[0],angles[1],angles[2]);      //On envoie finnalement les angles a la pedale a travers du port Serial.      
