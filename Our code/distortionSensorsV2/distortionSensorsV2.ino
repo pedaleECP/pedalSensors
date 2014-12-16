@@ -427,9 +427,12 @@ void readAngles() {
 }
 
 void updateScreen() {
+  //  only update the screen every 0.1 seconds
   if (millis() - last_update_time > 100) {
     last_update_time = millis();
-
+    
+    //  if the new parameter is bigger than the old one, add a blue bar
+    //  else add a white bar. this scheme is applied for every parameter.
     if (p0_old < p0) {
       tft.fillRoundRect(MIN_SCREEN, 32, map(p0, MIN, MAX, MIN_SCREEN, MAX_SCREEN), 16, 0, ST7735_BLUE);
     }
