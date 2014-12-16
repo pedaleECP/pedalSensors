@@ -6,7 +6,7 @@
 const int LED            =  3;
 const int FOOTSWITCH     =  7;
 const int TOGGLE         =  2;
-const int SAVE_BUTTON    =  1;
+const int SAVE_BUTTON    = 12;
 const int DISPLAY_BUTTON =  4;
 const int TFT_CS         = 10;
 const int TFT_RST        =  8;
@@ -59,13 +59,16 @@ int db_last_debounce_time = 0;
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
 enum ScreenInfos {MODE_CHANGE, EFFECT_CHANGE, NO_CHANGE} screenInfo = EFFECT_CHANGE;
+char* infos[]={"Standby", "Button Mode", "Sensor Mode", "Fix Mode", "Error", "Distortion"};
+bool newScreenInfo = true;
+int infoNr = 5;
 int last_update_time   = 0;
 int screenInfoTime = 0;
 
 int p0 = 0, p1 = 0, p2 = 0;
 int p0_old = 0, p1_old = 0, p2_old = 0;
-
-
+int p0_saved = 0, p1_saved = 0, p2_saved = 0;
+ 
 byte incomingByte;
 byte byteTemp;
 int16_t counter;
@@ -96,7 +99,7 @@ void setup()
 
 
   pinMode(FOOTSWITCH, INPUT);
-  // pinMode(SAVE_BUTTON, INPUT);
+  pinMode(SAVE_BUTTON, INPUT);
   // pinMode(DISPLAY_BUTTON, INPUT);
   pinMode(LED, OUTPUT);
 
@@ -123,7 +126,7 @@ void setup()
   Serial.begin(57600);
 
   // initialize the XBee's serial port transmission
-  Serial1.begin(57600);
+  Serial1.begin(57600); 
 
   // From XBee
   lastByte = (byte)0;
@@ -134,26 +137,25 @@ void setup()
 void loop() {
   readFootSwitch();
   updateScreen();
-  // readSaveButton();
   // readDisplayButton();
 
   switch (footswitch_mode) {
     case STANDBY1_MODE:
     case STANDBY2_MODE:
-      Serial.println("Standby Mode");
       break;
+      
     case BUTTON_MODE:
-      Serial.println("Button Mode");
+      readSaveButton();
       readPotentiometer();
       break;
 
     case SENSOR_MODE:
-      Serial.println("Sensor Mode");
+      readSaveButton();
       readSensor();
       break;
 
     case FIX_MODE:
-      Serial.println("Fix Mode");
+      readSaveButton();
       break;
 
     default:
@@ -204,10 +206,32 @@ void readFootSwitch() {
   }
 
   if (footswitch_detect != footswitch_detect_older && millis() - fw_last_debounce_time > DEBOUNCE_DELAY) {
-    footswitch_mode = (Modes)(((int)footswitch_mode + 1) % 4);
+    switch (footswitch_mode) {
+      case STANDBY1_MODE:
+        footswitch_mode = BUTTON_MODE;
+        infoNr = 1;
+        break;
+      case BUTTON_MODE:
+        footswitch_mode = STANDBY2_MODE;
+        infoNr = 0;
+        break;
+      case STANDBY2_MODE:
+        footswitch_mode = SENSOR_MODE;
+        infoNr = 2;
+        break;
+      case SENSOR_MODE:
+        footswitch_mode = STANDBY1_MODE;
+        infoNr = 0;
+        break;
+      case FIX_MODE:
+        footswitch_mode = STANDBY1_MODE;
+        infoNr = 0;
+        break;
+    }
+    
+    newScreenInfo = true;
+    
     footswitch_detect_older = footswitch_detect;
-
-    screenInfo = MODE_CHANGE;
   }
 
   footswitch_detect_old = footswitch_detect;
@@ -221,14 +245,14 @@ void readSaveButton() {
       int pressTime = millis() - save_button_press_time;
 
       if (pressTime > 3000) {
-        EEPROM.write(0, p0);
-        EEPROM.write(1, p1);
-        EEPROM.write(2, p2);
+        p0_saved = p0;
+        p1_saved = p1;
+        p2_saved = p2;
       }
       else {
-        p0 = EEPROM.read(0);
-        p1 = EEPROM.read(1);
-        p2 = EEPROM.read(2);
+        p0 = p0_saved;
+        p1 = p1_saved;
+        p2 = p2_saved;
       }
     }
 
@@ -240,7 +264,8 @@ void readSaveButton() {
       save_button_was_not_pressed = false;
 
       footswitch_mode = FIX_MODE;
-      screenInfo = MODE_CHANGE;
+      newScreenInfo = true;
+      infoNr = 4;
     }
   }
 }
@@ -255,6 +280,7 @@ void readDisplayButton() {
       display_button_enabled == false;
       effect = (Effects)(((int)effect + 1) % 1);
 
+      
       screenInfo = EFFECT_CHANGE;
     }
   }
@@ -284,13 +310,7 @@ void readPotentiometer() {
   updatePot(&pot1, &pot1_mod_old, pot1_mod);
   updatePot(&pot2, &pot2_mod_old, pot2_mod);
 
-  int x0 = map(pot0_mod, MIN_POT, MAX_POT_MOD, 0, 100);
-  x0 = (-50 + x0) ^ 3 + x0 + 125000;
-  x0 = x0 + (pot0 / MAX_POT_MOD) * 125100;
-  p0 = map(x0, 0, 4 * 125100, MIN, MAX);
-
-
-  // p0 = map(pot0, MIN_POT, MAX_POT, MIN, MAX);
+  p0 = map(pot0, MIN_POT, MAX_POT, MIN, MAX);
   p1 = map(pot1, MIN_POT, MAX_POT, MIN, MAX);
   p2 = map(pot2, MIN_POT, MAX_POT, MIN, MAX);
 }
@@ -329,52 +349,27 @@ void updatePot(int *pot, int *pot_mod_old, int pot_mod) {
 void updateScreen() {
   if (millis() - last_update_time > 100) {
     last_update_time = millis();
-
-    switch (screenInfo) {
-      case EFFECT_CHANGE:
-        if (millis() - screenInfoTime > 3000) {
-          tft.fillRoundRect(0, 32, 115, 16, 0, ST7735_WHITE);
-          tft.setCursor(0, 0);
-
-          switch (effect) {
-            case DISTORTION:
-              tft.print("Distortion");
-              break;
-          }
-
-          screenInfo = NO_CHANGE;
-        }
-
-        break;
-
-      case MODE_CHANGE:
-        tft.fillRoundRect(0, 32, 115, 16, 0, ST7735_WHITE);
-        tft.setCursor(0, 0);
-
-        switch (footswitch_mode) {
-          case STANDBY1_MODE:
-          case STANDBY2_MODE:
-            tft.print("Standby");
-            break;
-          case BUTTON_MODE:
-            tft.print("Button Mode");
-            break;
-          case SENSOR_MODE:
-            tft.print("Sensor Mode");
-            break;
-          case FIX_MODE:
-            tft.print("Fix Mode");
-            break;
-        }
-        screenInfoTime = millis();
-        screenInfo = EFFECT_CHANGE;
-        break;
-
-      case NO_CHANGE:
-        screenInfoTime = millis();
+    
+    if (newScreenInfo == true) {
+      tft.fillRoundRect(0, 0, 160, 16, 0, ST7735_WHITE);
+      tft.setCursor(0, 0);
+      tft.print(infos[infoNr]);
+      screenInfoTime = millis();
+      newScreenInfo = false;
     }
-
-
+    else if (millis() - screenInfoTime > 3000 && infoNr < 5) {
+      tft.fillRoundRect(0, 0, 160, 16, 0, ST7735_WHITE);
+      tft.setCursor(0, 0);
+      
+      switch (effect) {
+          case DISTORTION:
+            infoNr = 5;
+            break;
+      }
+        
+      newScreenInfo = true;
+    }
+   
 
     if (p0_old < p0) {
       tft.fillRoundRect(MIN_SCREEN, 32, map(p0, MIN, MAX, MIN_SCREEN, MAX_SCREEN), 16, 0, ST7735_BLUE);
