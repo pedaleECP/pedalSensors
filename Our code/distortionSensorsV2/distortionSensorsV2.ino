@@ -12,73 +12,68 @@
 /* To make this code compile you will need the following libraries:
         * Adafruit_ST7735
         * Adafruit_GFX
+        * SPI.h
         * EEPROM.h */
+// Libraries
+#include "EEPROM.h"                             //
+#include <Adafruit_GFX.h>                       // Core graphics library
+#include <Adafruit_ST7735.h>                    // Hardware-specific library
+#include <SPI.h>                                // Used during debugging to show messages on the Serial print
 
-//Bibliotheques ajoutes par MovingTones
-#include "EEPROM.h"
-#include <Adafruit_GFX.h>                      // Core graphics library
-#include <Adafruit_ST7735.h>                   // Hardware-specific library
-#include <SPI.h>
-
-// Variables de l'effet original
-
-int in_ADC0, in_ADC1;                        //variables for 2 ADCs values (ADC0, ADC1)
-int POT0, POT1, POT2, out_DAC0, out_DAC1;    //variables for 3 pots (ADC8, ADC9, ADC10)
+// Variables from the original effects' code
+int in_ADC0, in_ADC1;                        // variables for 2 ADCs values (ADC0, ADC1)
+int POT0, POT1, POT2, out_DAC0, out_DAC1;    // variables for 3 pots (ADC8, ADC9, ADC10)
 const int LED = 3;                           // LED in pin 3
 const int FOOTSWITCH = 7;                    // Footswitch in pin 7
 const int TOGGLE = 2;                        // Toggle in pin 2
 int upper_threshold, lower_threshold;        // Variable for the distortion effect
 
 
-
-
-//Vaiables ajoutes par le groupe MovingTones
-const int SAVE_BUTTON = 1;                  //Description de la ligne de code a faire pour toutes!
-const int TFT_CS      = 10;
+const int SAVE_BUTTON = 1;                  // pins of the arduino 
+const int TFT_CS      = 10; 
 const int TFT_RST     = 8;
 const int TFT_DC      = 9;
 
-const int STANDBY1_MODE = 0;
-const int BUTTON_MODE   = 1;
-const int STANDBY2_MODE = 2;
-const int SENSOR_MODE   = 3;
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);  // instantiate the screen
 
-const int DEBOUNCE_DELAY = 50;
+// New variables
 
-const int MIN =     0;
+const int STANDBY1_MODE = 0;                // effects will only be applied when the pedal's footswitch is on HIGH
+const int BUTTON_MODE   = 1;                // sequence of pressing produces: low-high-low-high or high-low-high-low
+const int STANDBY2_MODE = 2;                // if initially footswitch is HIGH, we will go to BUTTON_MODE
+const int SENSOR_MODE   = 3;                // if intiially footswitch is LOW, we will go to STANDBY1_MODE
+
+const int DEBOUNCE_DELAY = 50;              // delay to be applied to debounce
+
+const int MIN =     0;                      // range of the parameters p0, p1, p2 for the effects' code
 const int MAX =  4096;
 
-const int MIN_SCREEN =   0;
+const int MIN_SCREEN =   0;                  // length of the bar graph to be displayed on the screen
 const int MAX_SCREEN = 115;
 
-const int MAX_POT   =  4096;
+const int MAX_POT   =  4096;                // readings from the bottons will be scaled to this range
 const int MIN_POT   =     0;
 const int LIMIT_POT = 4096;
 
-const int MAX_SENSORS = 180;
+const int MAX_SENSORS = 180;                // sensors send angles in this range throught the XBees
 const int MIN_SENSORS = 0;
 
-Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
-
-int footswitch_detect;
+int footswitch_detect;                      // variables to fascilitate the toggle
 int footswitch_detect_last;
 int footswitch_detect_previous;
 
-int save_button_detect;
+int save_button_detect;                     // currently not used
 int save_button_press_time;
 boolean save_button_pressed;
 
-int footswitch_mode = STANDBY1_MODE;
+int footswitch_mode = STANDBY1_MODE;        // instantiate footswitch_mode to STANDBY1_MODE
 
-int last_debounce_time = 0;
+int last_debounce_time = 0;                 // variables to fascilitate debouncing
 int last_update_time = 0;
 
-int p0 = 0, p1 = 0, p2 = 0;
+int p0 = 0, p1 = 0, p2 = 0;                 // parameters to be used by the code to apply effects accordingly
 int p0_old, p1_old, p2_old;
 int MEMORYPOTMOD0 = 0, MEMORYPOTMOD1 = 0, MEMORYPOTMOD2 = 0;
-
-
-
 
 
 
@@ -87,17 +82,15 @@ int MEMORYPOTMOD0 = 0, MEMORYPOTMOD1 = 0, MEMORYPOTMOD2 = 0;
 byte incomingByte;      //Bytes that are going to be used to add them and to see if there is any header between they two.
 byte lastByte;          // This will be just the byte before incomingByte
 
-byte byteTemp;
-int16_t counter;
-int16_t currentInt;
+
+// Variables to assemble 16-bits ints from bytes received form the Arduino Nano through the XBees
+// !!! Note that int on an Arduino DUE is 32-bit but in many other smaller Arduinos it is 16-bit
+// Thus to avoid negative-wrapping-around-to-positive, use int16_t for all int variables in this program
+int16_t currentInt;   
 int16_t int1;
 byte byteArray[3];
-byte byte1;
-byte byte2;
-byte byte3;
-int16_t angles[3];
+int16_t angles[3];      // the three angles read by the sensor as received from XBees
 int16_t mask;
-
 
 
 
@@ -117,7 +110,7 @@ void setup()
 
   // We are going to read from the FootSwitch to make our 3 modes.
 
-  pinMode(FOOTSWITCH, INPUT);       // Enalbles to read from the footswitch
+  pinMode(FOOTSWITCH, INPUT);       // Enables to read from the footswitch
   // pinMode(SAVE_BUTTON, INPUT);
   pinMode(LED, OUTPUT);
 
@@ -134,7 +127,8 @@ void setup()
   tft.initR(INITR_BLACKTAB);
   tft.fillScreen(ST7735_BLACK);
 
-  tft.setRotation(-1);
+// Here we set the screen parameters: orientation, text size, color and text display
+  tft.setRotation(-1);             
   tft.setTextSize(2);
   tft.fillScreen(ST7735_WHITE);
   tft.setTextColor(ST7735_RED);
@@ -152,16 +146,12 @@ void setup()
   p2_old = p2;
 
 
-
-
   // Initialize the Serial ports for message transmissions
-  Serial.begin(57600);                   //Inicialize the port for comunication with the PC to send messages useful for coding (Serial)
-  Serial1.begin(57600);                  //Inicialize the port for comunication with the XBee (Serial1)
+  Serial.begin(57600);                   //Initialize the port for comunication with the PC to send messages useful for coding (Serial)
+  Serial1.begin(57600);                  //Initialize the port for comunication with the XBee (Serial1)
 
   // From XBee
-  lastByte = (byte)0;     // We inicialize the lastBythe with 0 so he can make his first comparison.
-
-
+  lastByte = (byte)0;     // We inicialize the lastBythe with 0 so it can make its first comparison.
 
 }
 
@@ -172,20 +162,20 @@ void loop()
   updateScreen();                                    //We upload the screen information
   // readSaveButton();
 
-  //From the original effect code
+  // From the original effect code
 
-  //Read the ADCs
+  // Read the ADCs
   while ((ADC->ADC_ISR & 0x1CC0) != 0x1CC0); // wait for ADC 0, 1, 8, 9, 10 conversion complete.
   in_ADC0 = ADC->ADC_CDR[7];             // read data from ADC0
   in_ADC1 = ADC->ADC_CDR[6];             // read data from ADC1
 
 
-  //  POT0=ADC->ADC_CDR[10];                 // read data from ADC8
+  // POT0=ADC->ADC_CDR[10];                 // read data from ADC8
   // POT1=ADC->ADC_CDR[11];                 // read data from ADC9
   // POT2=ADC->ADC_CDR[12];                 // read data from ADC10
 
 
-  //Changing the parameters values depending of the mode
+  // Changing the parameters values depending of the mode
 
   switch (footswitch_mode) {
     case STANDBY1_MODE:
@@ -207,7 +197,7 @@ void loop()
   }
 
 
-  //We display the parameters values on the computer screen
+  // We display the parameters values on the computer screen
   Serial.print(p0);
   Serial.print("|");
   Serial.print(p1);
@@ -217,8 +207,8 @@ void loop()
 
   Serial.println("");
 
-  //Code from the original effect: This is the effect, taking the parameters p0, p1 and p2
-
+  // Code for the effect 'distortion' - distortion does not use parameter p1
+  // Code from the original effect: This is the effect, taking the parameters p0, p1 and p2
   upper_threshold = map(p0, 0, 4095, 4095, 2047);
   lower_threshold = map(p0, 0, 4095, 0000, 2047);
 
@@ -241,7 +231,7 @@ void loop()
 
 
 
-
+// reading the FOOTSWITCH on the pedalShield and implement a debouncing mechanism
 void readFootSwitch() {
   footswitch_detect = digitalRead(FOOTSWITCH);
 
@@ -254,7 +244,7 @@ void readFootSwitch() {
     footswitch_detect_previous = footswitch_detect;
   }
 
-  footswitch_detect_last = footswitch_detect;
+  footswitch_detect_last = footswitch_detect; // we detect changes in the FOOTSWITCH by comparing these two variables
 }
 
 
@@ -286,27 +276,28 @@ void readSaveButton() {
 }
 
 void readPotentiometer() {
-  //Valeur à rajouter au paramètre
-  int POTMOD0 = ADC->ADC_CDR[2]; //read from pot0
-  POT0 = updatePot(POT0, MEMORYPOTMOD0, POTMOD0);
-  p0 = POT0;
-  MEMORYPOTMOD0 = POTMOD0;
+  
+  int POTMOD0 = ADC->ADC_CDR[2];                        //reading first potentiometer
+  POT0 = updatePot(POT0, MEMORYPOTMOD0, POTMOD0);       //update first parameter using current reading of potentiometer
+  p0 = POT0;                                            //update globally
+  MEMORYPOTMOD0 = POTMOD0;                              //now the potentiometer reading becomes the 'previous' reading
   //Serial.println(p0);
-  int POTMOD1 = ADC->ADC_CDR[1]; //read from pot1
-  POT1 = updatePot(POT1, MEMORYPOTMOD1, POTMOD1);
-  p1 = POT1;
-  MEMORYPOTMOD1 = POTMOD1;
-  int POTMOD2 = ADC->ADC_CDR[0]; //read from pot2
-  POT2 = updatePot(POT2, MEMORYPOTMOD2, POTMOD2);
-  p2 = POT2;
-  MEMORYPOTMOD2 = POTMOD2;
+  int POTMOD1 = ADC->ADC_CDR[1]; //read from pot1       //reading second potentiometer
+  POT1 = updatePot(POT1, MEMORYPOTMOD1, POTMOD1);       //update second parameter using current reading of potentiometer
+  p1 = POT1;                                            //update globally
+  MEMORYPOTMOD1 = POTMOD1;                              //now the potentiometer reading becomes the 'previous' reading
+  
+  int POTMOD2 = ADC->ADC_CDR[0]; //read from pot2       //reading third potentiometer
+  POT2 = updatePot(POT2, MEMORYPOTMOD2, POTMOD2);       //update third parameter using current reading of potentiometer
+  p2 = POT2;                                            //update globally
+  MEMORYPOTMOD2 = POTMOD2;                              //now the potentiometer reading becomes the 'previous' reading
 }
 
 
-int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
-  int VALUE = 0;
-  if ((POTMOD - MEMORYPOTMOD) < -0.9 * MAX_POT) {
-    VALUE = MAX_POT + POTMOD - MEMORYPOTMOD;//+POTSENSOR
+int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {   //update the given parameter
+  int VALUE = 0;                                         //Value to be added to previous values of parameters
+  if ((POTMOD - MEMORYPOTMOD) < -0.9 * MAX_POT) {        // case of more than one complete turn in the positive direction
+    VALUE = MAX_POT + POTMOD - MEMORYPOTMOD;
 
     if ((POT + VALUE) > LIMIT_POT) {
       POT = LIMIT_POT;
@@ -315,8 +306,8 @@ int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
       POT = POT + VALUE ;
     }
   }
-  else if ((POTMOD - MEMORYPOTMOD) > 0.9 * MAX_POT) {
-    VALUE = - (MAX_POT) + POTMOD - MEMORYPOTMOD;//+POTSENSOR
+  else if ((POTMOD - MEMORYPOTMOD) > 0.9 * MAX_POT) {   // case of more than one complete turn in the negative direction
+    VALUE = - (MAX_POT) + POTMOD - MEMORYPOTMOD;
     if ((POT + VALUE) < MIN_POT) {
       POT = MIN_POT;
     }
@@ -324,8 +315,8 @@ int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
       POT = POT + VALUE ;
     }
   }
-  else if ((POTMOD - MEMORYPOTMOD) > 0) {
-    VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR
+  else if ((POTMOD - MEMORYPOTMOD) > 0) {               //case of less than one complete turn in the positive direction
+    VALUE = POTMOD - MEMORYPOTMOD;
     if ((POT + VALUE) > LIMIT_POT) {
       POT = LIMIT_POT;
     }
@@ -333,7 +324,7 @@ int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
       POT = POT + VALUE ;
     }
   }
-  else if ((POTMOD - MEMORYPOTMOD) < 0) {
+  else if ((POTMOD - MEMORYPOTMOD) < 0) {               //case of less than one complete turn in the negative direction
     VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR
     if ((POT + VALUE) < MIN_POT) {
       POT = MIN_POT;
@@ -345,31 +336,32 @@ int updatePot(int POT, int MEMORYPOTMOD, int POTMOD) {
   return POT;
 }
 
-//Function readSensor() used to read 3 angles if there is any message comming.
 
+// Read the 3 angles transmitted by the XBees if there is message available
+// The 3 angles (6 bytes) are always sent together following an int header == -21846
 void readSensor() {
-  if (Serial1.available()) {                          // We just take this in count if there is some message in the Serial buffer
+  if (Serial1.available()) {
 
-    boolean header = false;                     //We consider that there is not any header recieved yet, just useful for the first comparison in the next while
-    lastByte = Serial1.read();                  //We take our first byte
+    boolean header = false;                     // before a valid header is detected, header is set to false
+    lastByte = Serial1.read();                  // read one byte
 
     while (Serial1.available() && !header) {
-      incomingByte = Serial1.read();    //We take our following byte
+      incomingByte = Serial1.read();    // read another byte
 
-      int1 = assembleInt(lastByte, incomingByte);  //We check if between our last two bytes there is any header
+      int1 = assembleInt(lastByte, incomingByte);  // each int is 16-bit, so we assemble the incoming int by applying bit-wise operations on the two bytes
 
-      //Serial.println("waiting"); // Uncomment this line to see how much it takes to clear the buffer
+      // Serial.println("waiting"); // uncomment this line to see how long it takes to clear the buffer
 
       if (int1 == -21846) {
-        header = true; //Just if we have reconized a header we notify it into our "heade" boolean variable.
+        header = true; // a correct header is detected
       }
       else {
-        lastByte = incomingByte; // If there is not any header we take our second byte as our first byte, to then make a comparison with the following
+        lastByte = incomingByte; // if there is not any header we take our second byte as our first byte, to then make a comparison with the following
       }
     }
 
-    readAngles();                            //Until this point we have reconized a header. This means that the next 6 bytes are our 3 angles. We read them.
-    lastByte = (byte)0;                        // I think that this line it's not necesary.
+    // if the header is detected, the next 6 bytes are the 3 values of the angles (each int is 16-bit)
+    readAngles();
   }
 }
 
@@ -388,10 +380,11 @@ int16_t assembleInt(byte byte1, byte byte2) {
   return currentInt;
 }
 
-//  Function to readthe Angles form the next 6 bytes (2 bytes for each angle)
+//  Read the angles from the next 6 bytes (2 bytes for each 16-bit int angle)
 void readAngles() {
 
-  for (int i = 0; i < 3; i++) {                          //We know they should be 3 angles
+  // Expect 3 angles
+  for (int i = 0; i < 3; i++) {
 
     /* We know that we should have a message in the buffer, (because we have reconized an header)
     but, it can happen that the pedal tries to read the angles form the Serial before the sensor
@@ -414,7 +407,7 @@ void readAngles() {
     }
 
     byteArray[1] = Serial1.read();                        // We read the second byte
-    angles[i] = assembleInt(byteArray[0], byteArray[1]);  //We construct the angle using both bytes
+    angles[i] = assembleInt(byteArray[0], byteArray[1]);  // We construct the angle using both bytes
   }
 
   /*Sometimes, (and I don't know yet why.. and this is a ToDo:try to prevent this from another way)
