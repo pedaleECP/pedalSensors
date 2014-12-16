@@ -49,12 +49,12 @@ void loop() {
       //sixDOF.getValues(accel);              //Si jamais on a besoin des accelerations
       sixDOF.getYawPitchRoll(angles);        //On a choisi d'utiliser ces angles car sont plus intuitives dans le mouvement
       
-      angles[0]=angles[0]+90;                // Comme l'angle va de -90 a +90 on le change pour etre de 0 a 180
+      angles[0]=abs(angles[0]);                // Comme l'angle va de -180 a +180 on le change pour etre de 0 --- 150--180--150--0 etc...
       
       //Mais en fait l'angle Yaw va de -180 jusqu'a +180, donc on va se restrindre a la plage 0 180.
       //TODO: Take advantaje of this large angle.
-      if (angles[0]>180){angles[0]=180;}
-      if (angles[0]<0){angles[0]=0;}
+     // if (angles[0]>180){angles[0]=180;}
+     // if (angles[0]<0){angles[0]=0;}
       
       angles[1]=angles[1]+90;              // Comme l'angle va de -90 a +90 on le change pour etre de 0 a 180
       angles[2]=angles[2]+90;              // Comme l'angle va de -90 a +90 on le change pour etre de 0 a 180
@@ -71,7 +71,7 @@ void loop() {
               Serial.println();*/
               
     
-      envoyeAngles(angles[0],angles[1],angles[2]);      //On envoie finnalement les angles a la pedale a travers du port Serial.      
+      envoyeAngles(angles[1],angles[0],angles[2]);      //On envoie finnalement les angles a la pedale a travers du port Serial.      
 
         
     
