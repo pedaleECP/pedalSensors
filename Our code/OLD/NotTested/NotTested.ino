@@ -22,7 +22,7 @@ const int MAX_SCREEN = 115;
 
 const int MIN_POT     =        0;
 const int MAX_POT_MOD =     4096;
-const int MAX_POT     =     4096;
+const int MAX_POT     =   4*4096;
 
 const int MIN_SENSOR =   0;
 const int MAX_SENSOR = 180;
@@ -265,7 +265,7 @@ void readSaveButton() {
 
       footswitch_mode = FIX_MODE;
       newScreenInfo = true;
-      infoNr = 4;
+      infoNr = 3;
     }
   }
 }
@@ -363,7 +363,7 @@ void updateScreen() {
       
       switch (effect) {
           case DISTORTION:
-            infoNr = 6;
+            infoNr = 5;
             break;
       }
         
