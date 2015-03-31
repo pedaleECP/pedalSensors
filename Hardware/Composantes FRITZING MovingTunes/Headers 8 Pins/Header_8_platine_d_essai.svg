@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Fritzing (http://www.fritzing.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.2"
+   x="0in"
+   y="0in"
+   width="72.817497"
+   height="8.999999"
+   viewBox="0 0 58.253998 7.1999992"
+   id="svg2"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="Header_8_platine_d_essaisvg.svg">
+  <metadata
+     id="metadata253">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs251" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="776"
+     id="namedview249"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="9.7111111"
+     inkscape:cx="42.577382"
+     inkscape:cy="-14.065036"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="breadboard" />
+  <g
+     partID="17634980"
+     id="g4">
+    <g
+       id="breadboard">
+      <rect
+         width="58.253998"
+         height="7.1999993"
+         id="rect7"
+         x="0"
+         y="0"
+         style="fill:#404040" />
+      <rect
+         width="2.7831199"
+         x="2.2084301"
+         y="2.2084301"
+         height="2.7831199"
+         id="connector0pin"
+         style="fill:none" />
+      <rect
+         width="2.1582899"
+         x="2.5183401"
+         y="2.47054"
+         height="2.2565801"
+         id="connector0terminal"
+         style="fill:none" />
+      <rect
+         width="2.7831199"
+         x="2.2084301"
+         y="2.2084301"
+         height="2.7831199"
+         id="rect11" />
+      <polygon
+         points="6.01654,1.18445 1.18445,1.18445 2.20843,2.20843 4.99156,2.20843 "
+         id="polygon13"
+         style="fill:#2a2a29" />
+      <polygon
+         points="6.01654,6.01654 6.01654,1.18445 4.99156,2.20843 4.99156,4.99156 "
+         id="polygon15"
+         style="fill:#474747" />
+      <polygon
+         points="1.18445,6.01654 6.01654,6.01654 4.99156,4.99156 2.20843,4.99156 "
+         id="polygon17"
+         style="fill:#595959" />
+      <polygon
+         points="1.18445,1.18445 1.18445,6.01654 2.20843,4.99156 2.20843,2.20843 "
+         id="polygon19"
+         style="fill:#373737" />
+      <rect
+         width="2.7831199"
+         x="9.4084597"
+         y="2.2084301"
+         height="2.7831199"
+         id="connector1pin"
+         style="fill:none" />
+      <rect
+         width="2.1582899"
+         x="9.7183399"
+         y="2.47054"
+         height="2.2565801"
+         id="connector1terminal"
+         style="fill:none" />
+      <rect
+         width="2.7831199"
+         x="9.4084597"
+         y="2.2084301"
+         height="2.7831199"
+         id="rect23" />
+      <polygon
+         points="13.2165,1.18445 8.38447,1.18445 9.40846,2.20843 12.1915,2.20843 "
+         id="polygon25"
+         style="fill:#2a2a29" />
+      <polygon
+         points="13.2165,6.01654 13.2165,1.18445 12.1915,2.20843 12.1915,4.99156 "
+         id="polygon27"
+         style="fill:#474747" />
+      <polygon
+         points="8.38447,6.01654 13.2165,6.01654 12.1915,4.99156 9.40846,4.99156 "
+         id="polygon29"
+         style="fill:#595959" />
+      <polygon
+         points="8.38447,1.18445 8.38447,6.01654 9.40846,4.99156 9.40846,2.20843 "
+         id="polygon31"
+         style="fill:#373737" />
+      <rect
+         width="2.7831199"
+         x="16.6085"
+         y="2.2084301"
+         height="2.7831199"
+         id="connector2pin"
+         style="fill:none" />
+      <rect
+         width="2.1582899"
+         x="16.918301"
+         y="2.47054"
+         height="2.2565801"
+         id="connector2terminal"
+         style="fill:none" />
+      <rect
+         width="2.7831199"
+         x="16.6085"
+         y="2.2084301"
+         height="2.7831199"
+         id="rect35" />
+      <polygon
+         points="20.4165,1.18445 15.5845,1.18445 16.6085,2.20843 19.3915,2.20843 "
+         id="polygon37"
+         style="fill:#2a2a29" />
+      <polygon
+         points="20.4165,6.01654 20.4165,1.18445 19.3915,2.20843 19.3915,4.99156 "
+         id="polygon39"
+         style="fill:#474747" />
+      <polygon
+         points="15.5845,6.01654 20.4165,6.01654 19.3915,4.99156 16.6085,4.99156 "
+         id="polygon41"
+         style="fill:#595959" />
+      <polygon
+         points="15.5845,1.18445 15.5845,6.01654 16.6085,4.99156 16.6085,2.20843 "
+         id="polygon43"
+         style="fill:#373737" />
+      <rect
+         width="2.7831199"
+         x="23.8085"
+         y="2.2084301"
+         height="2.7831199"
+         id="connector3pin"
+         style="fill:none" />
+      <rect
+         width="2.1582899"
+         x="24.118299"
+         y="2.47054"
+         height="2.2565801"
+         id="connector3terminal"
+         style="fill:none" />
+      <rect
+         width="2.7831199"
+         x="23.8085"
+         y="2.2084301"
+         height="2.7831199"
+         id="rect47" />
+      <polygon
+         points="27.6165,1.18445 22.7845,1.18445 23.8085,2.20843 26.5915,2.20843 "
+         id="polygon49"
+         style="fill:#2a2a29" />
+      <polygon
+         points="27.6165,6.01654 27.6165,1.18445 26.5915,2.20843 26.5915,4.99156 "
+         id="polygon51"
+         style="fill:#474747" />
+      <polygon
+         points="22.7845,6.01654 27.6165,6.01654 26.5915,4.99156 23.8085,4.99156 "
+         id="polygon53"
+         style="fill:#595959" />
+      <polygon
+         points="22.7845,1.18445 22.7845,6.01654 23.8085,4.99156 23.8085,2.20843 "
+         id="polygon55"
+         style="fill:#373737" />
+      <rect
+         width="2.7831199"
+         x="31.008499"
+         y="2.2084301"
+         height="2.7831199"
+         id="connector4pin"
+         style="fill:none" />
+      <rect
+         width="2.1582899"
+         x="31.3183"
+         y="2.47054"
+         height="2.2565801"
+         id="connector4terminal"
+         style="fill:none" />
+      <rect
+         width="2.7831199"
+         x="31.008499"
+         y="2.2084301"
+         height="2.7831199"
+         id="rect59" />
+      <polygon
+         points="34.8165,1.18445 29.9845,1.18445 31.0085,2.20843 33.7915,2.20843 "
+         id="polygon61"
+         style="fill:#2a2a29" />
+      <polygon
+         points="34.8165,6.01654 34.8165,1.18445 33.7915,2.20843 33.7915,4.99156 "
+         id="polygon63"
+         style="fill:#474747" />
+      <polygon
+         points="29.9845,6.01654 34.8165,6.01654 33.7915,4.99156 31.0085,4.99156 "
+         id="polygon65"
+         style="fill:#595959" />
+      <polygon
+         points="29.9845,1.18445 29.9845,6.01654 31.0085,4.99156 31.0085,2.20843 "
+         id="polygon67"
+         style="fill:#373737" />
+      <rect
+         width="2.7831199"
+         x="38.2085"
+         y="2.2084301"
+         height="2.7831199"
+         id="connector5pin"
+         style="fill:none" />
+      <rect
+         width="2.1582899"
+         x="38.518299"
+         y="2.47054"
+         height="2.2565801"
+         id="connector5terminal"
+         style="fill:none" />
+      <rect
+         width="2.7831199"
+         x="38.2085"
+         y="2.2084301"
+         height="2.7831199"
+         id="rect71" />
+      <polygon
+         points="42.0165,1.18445 37.1845,1.18445 38.2085,2.20843 40.9915,2.20843 "
+         id="polygon73"
+         style="fill:#2a2a29" />
+      <polygon
+         points="42.0165,6.01654 42.0165,1.18445 40.9915,2.20843 40.9915,4.99156 "
+         id="polygon75"
+         style="fill:#474747" />
+      <polygon
+         points="37.1845,6.01654 42.0165,6.01654 40.9915,4.99156 38.2085,4.99156 "
+         id="polygon77"
+         style="fill:#595959" />
+      <polygon
+         points="37.1845,1.18445 37.1845,6.01654 38.2085,4.99156 38.2085,2.20843 "
+         id="polygon79"
+         style="fill:#373737" />
+      <rect
+         width="2.7831199"
+         x="45.408501"
+         y="2.2084301"
+         height="2.7831199"
+         id="connector6pin"
+         style="fill:none" />
+      <rect
+         width="2.1582899"
+         x="45.7183"
+         y="2.47054"
+         height="2.2565801"
+         id="connector6terminal"
+         style="fill:none" />
+      <rect
+         width="2.7831199"
+         x="45.408501"
+         y="2.2084301"
+         height="2.7831199"
+         id="rect83" />
+      <polygon
+         points="49.2165,1.18445 44.3845,1.18445 45.4085,2.20843 48.1915,2.20843 "
+         id="polygon85"
+         style="fill:#2a2a29" />
+      <polygon
+         points="49.2165,6.01654 49.2165,1.18445 48.1915,2.20843 48.1915,4.99156 "
+         id="polygon87"
+         style="fill:#474747" />
+      <polygon
+         points="44.3845,6.01654 49.2165,6.01654 48.1915,4.99156 45.4085,4.99156 "
+         id="polygon89"
+         style="fill:#595959" />
+      <polygon
+         points="44.3845,1.18445 44.3845,6.01654 45.4085,4.99156 45.4085,2.20843 "
+         id="polygon91"
+         style="fill:#373737" />
+      <rect
+         width="2.7831199"
+         x="52.608501"
+         y="2.2084301"
+         height="2.7831199"
+         id="connector7pin"
+         style="fill:none" />
+      <rect
+         width="2.1582899"
+         x="52.918301"
+         y="2.47054"
+         height="2.2565801"
+         id="connector7terminal"
+         style="fill:none" />
+      <rect
+         width="2.7831199"
+         x="52.608501"
+         y="2.2084301"
+         height="2.7831199"
+         id="rect95" />
+      <polygon
+         points="56.4165,1.18445 51.5845,1.18445 52.6085,2.20843 55.3915,2.20843 "
+         id="polygon97"
+         style="fill:#2a2a29" />
+      <polygon
+         points="56.4165,6.01654 56.4165,1.18445 55.3915,2.20843 55.3915,4.99156 "
+         id="polygon99"
+         style="fill:#474747" />
+      <polygon
+         points="51.5845,6.01654 56.4165,6.01654 55.3915,4.99156 52.6085,4.99156 "
+         id="polygon101"
+         style="fill:#595959" />
+      <polygon
+         points="51.5845,1.18445 51.5845,6.01654 52.6085,4.99156 52.6085,2.20843 "
+         id="polygon103"
+         style="fill:#373737" />
+    </g>
+  </g>
+</svg>

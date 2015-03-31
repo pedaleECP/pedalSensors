@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Fritzing (http://www.fritzing.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.2"
+   x="0in"
+   y="0in"
+   width="7.02"
+   height="70.019997"
+   viewBox="0 0 5.6159998 56.016"
+   id="svg4680"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="HEader_circuit.svg">
+  <metadata
+     id="metadata4767">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4765" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="776"
+     id="namedview4763"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="3.635669"
+     inkscape:cx="48.199637"
+     inkscape:cy="-2.5631909"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g4708" />
+  <g
+     partID="17635231"
+     id="g4705"
+     transform="translate(-2.2320003,-2.2319999)">
+    <g
+       id="copper1">
+      <g
+         id="g4708">
+        <circle
+           cx="5.04"
+           cy="5.04"
+           id="circle4710"
+           r="2.0880001"
+           d="m 7.128,5.04 c 0,1.1531706 -0.9348294,2.088 -2.088,2.088 -1.1531706,0 -2.0880001,-0.9348294 -2.0880001,-2.088 0,-1.1531706 0.9348295,-2.0880001 2.0880001,-2.0880001 1.1531706,0 2.088,0.9348295 2.088,2.0880001 z"
+           sodipodi:cx="5.04"
+           sodipodi:cy="5.04"
+           sodipodi:rx="2.0880001"
+           sodipodi:ry="2.0880001"
+           style="fill:none;stroke:#ffbf00;stroke-width:1.44000006" />
+        <circle
+           cx="5.04"
+           cy="12.24"
+           id="circle4712"
+           r="2.0880001"
+           d="m 7.128,12.24 c 0,1.15317 -0.9348294,2.088 -2.088,2.088 -1.1531706,0 -2.0880001,-0.93483 -2.0880001,-2.088 0,-1.153171 0.9348295,-2.088 2.0880001,-2.088 1.1531706,0 2.088,0.934829 2.088,2.088 z"
+           sodipodi:cx="5.04"
+           sodipodi:cy="12.24"
+           sodipodi:rx="2.0880001"
+           sodipodi:ry="2.0880001"
+           style="fill:none;stroke:#ffbf00;stroke-width:1.44000006" />
+        <circle
+           cx="5.04"
+           cy="19.440001"
+           id="circle4714"
+           r="2.0880001"
+           d="m 7.128,19.440001 c 0,1.15317 -0.9348294,2.088 -2.088,2.088 -1.1531706,0 -2.0880001,-0.93483 -2.0880001,-2.088 0,-1.153171 0.9348295,-2.088001 2.0880001,-2.088001 1.1531706,0 2.088,0.93483 2.088,2.088001 z"
+           sodipodi:cx="5.04"
+           sodipodi:cy="19.440001"
+           sodipodi:rx="2.0880001"
+           sodipodi:ry="2.0880001"
+           style="fill:none;stroke:#ffbf00;stroke-width:1.44000006" />
+        <circle
+           cx="5.04"
+           cy="26.639999"
+           id="circle4716"
+           r="2.0880001"
+           d="m 7.128,26.639999 c 0,1.153171 -0.9348294,2.088 -2.088,2.088 -1.1531706,0 -2.0880001,-0.934829 -2.0880001,-2.088 0,-1.15317 0.9348295,-2.088 2.0880001,-2.088 1.1531706,0 2.088,0.93483 2.088,2.088 z"
+           sodipodi:cx="5.04"
+           sodipodi:cy="26.639999"
+           sodipodi:rx="2.0880001"
+           sodipodi:ry="2.0880001"
+           style="fill:none;stroke:#ffbf00;stroke-width:1.44000006" />
+        <circle
+           cx="5.04"
+           cy="33.84"
+           id="circle4718"
+           r="2.0880001"
+           d="m 7.128,33.84 c 0,1.153171 -0.9348294,2.088 -2.088,2.088 -1.1531706,0 -2.0880001,-0.934829 -2.0880001,-2.088 0,-1.15317 0.9348295,-2.088 2.0880001,-2.088 1.1531706,0 2.088,0.93483 2.088,2.088 z"
+           sodipodi:cx="5.04"
+           sodipodi:cy="33.84"
+           sodipodi:rx="2.0880001"
+           sodipodi:ry="2.0880001"
+           style="fill:none;stroke:#ffbf00;stroke-width:1.44000006" />
+        <circle
+           cx="5.04"
+           cy="41.040001"
+           id="circle4720"
+           r="2.0880001"
+           d="m 7.128,41.040001 c 0,1.153171 -0.9348294,2.088 -2.088,2.088 -1.1531706,0 -2.0880001,-0.934829 -2.0880001,-2.088 0,-1.153171 0.9348295,-2.088 2.0880001,-2.088 1.1531706,0 2.088,0.934829 2.088,2.088 z"
+           sodipodi:cx="5.04"
+           sodipodi:cy="41.040001"
+           sodipodi:rx="2.0880001"
+           sodipodi:ry="2.0880001"
+           style="fill:none;stroke:#ffbf00;stroke-width:1.44000006" />
+        <circle
+           cx="5.04"
+           cy="48.240002"
+           id="circle4722"
+           r="2.0880001"
+           d="m 7.128,48.240002 c 0,1.15317 -0.9348294,2.088 -2.088,2.088 -1.1531706,0 -2.0880001,-0.93483 -2.0880001,-2.088 0,-1.153171 0.9348295,-2.088 2.0880001,-2.088 1.1531706,0 2.088,0.934829 2.088,2.088 z"
+           sodipodi:cx="5.04"
+           sodipodi:cy="48.240002"
+           sodipodi:rx="2.0880001"
+           sodipodi:ry="2.0880001"
+           style="fill:none;stroke:#ffbf00;stroke-width:1.44000006" />
+        <circle
+           cx="5.04"
+           cy="55.439999"
+           id="circle4724"
+           r="2.0880001"
+           d="m 7.128,55.439999 c 0,1.15317 -0.9348294,2.088 -2.088,2.088 -1.1531706,0 -2.0880001,-0.93483 -2.0880001,-2.088 0,-1.153171 0.9348295,-2.088 2.0880001,-2.088 1.1531706,0 2.088,0.934829 2.088,2.088 z"
+           sodipodi:cx="5.04"
+           sodipodi:cy="55.439999"
+           sodipodi:rx="2.0880001"
+           sodipodi:ry="2.0880001"
+           style="fill:none;stroke:#ffbf00;stroke-width:1.44000006" />
+      </g>
+    </g>
+  </g>
+</svg>

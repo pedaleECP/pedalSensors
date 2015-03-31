@@ -1,0 +1,1416 @@
+%!PS-Adobe-3.0
+%%Title: distortionSensorsV2.ino
+%%For: Viejitos
+%%Creator: a2ps version 4.14
+%%CreationDate: Tue Dec 16 15:53:10 2014
+%%BoundingBox: 24 24 571 818
+%%DocumentData: Clean7Bit
+%%Orientation: Landscape
+%%Pages: 5
+%%PageOrder: Ascend
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Courier-BoldOblique
+%%+ font Courier-Oblique
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%+ font Symbol
+%%+ font Times-Bold
+%%+ font Times-Roman
+%%DocumentProcessColors: Black 
+%%DocumentSuppliedResources: procset a2ps-a2ps-hdr
+%%+ procset a2ps-black+white-Prolog
+%%+ encoding ISO-8859-1Encoding
+%%EndComments
+/a2psdict 200 dict def
+a2psdict begin
+%%BeginProlog
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+
+% EPSF import as in the Red Book
+/BeginInclude {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack 
+  userdict begin
+    0 setgray 0 setlinecap
+    1 setlinewidth 0 setlinejoin
+    10 setmiterlimit [ ] 0 setdash newpath
+    gs_languagelevel 1 ne {
+      false setstrokeadjust false setoverprint 
+    } if
+} bind def
+
+/EndInclude {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+/BeginEPSF {
+  BeginInclude
+  /showpage { } def
+} bind def
+
+/EndEPSF {
+  EndInclude
+} bind def
+
+% Page prefeed
+/page_prefeed {         % bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} bind def
+
+/deffont {
+  findfont exch scalefont def
+} bind def
+
+/reencode_font {
+  findfont reencode 2 copy definefont pop def
+} bind def
+
+% Function c-show (str => -)
+% centers text only according to x axis.
+/c-show { 
+  dup stringwidth pop
+  2 div neg 0 rmoveto
+  show
+} bind def
+
+% Function l-show (str => -)
+% prints texts so that it ends at currentpoint
+/l-show {
+  dup stringwidth pop neg 
+  0 
+  rmoveto show
+} bind def
+
+% center-fit show (str w => -)
+% show centered, and scale currentfont so that the width is less than w
+/cfshow {
+  exch dup stringwidth pop
+  % If the title is too big, try to make it smaller
+  3 2 roll 2 copy
+  gt
+  { % if, i.e. too big
+    exch div
+    currentfont exch scalefont setfont
+  } { % ifelse
+    pop pop 
+  }
+  ifelse
+  c-show			% center title
+} bind def
+
+% Return the y size of the current font
+% - => fontsize
+/currentfontsize {
+  currentfont /FontType get 0 eq {
+    currentfont /FontMatrix get 3 get
+  }{
+    currentfont /FontMatrix get 3 get 1000 mul
+  } ifelse
+} bind def
+
+% reencode the font
+% <encoding-vector> <fontdict> -> <newfontdict>
+/reencode { %def
+  dup length 5 add dict begin
+    { %forall
+      % <vector> <key> <val>
+      1 index /FID ne 
+      { def }{ pop pop } ifelse
+    } forall
+    /Encoding exch def % -
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+    % We use `load' because sometimes BBox is executable, sometimes not.
+    % Since we need 4 numbers an not an array avoid BBox from being executed
+    /FontBBox load aload pop
+    FontMatrix transform /Ascent exch def pop
+    FontMatrix transform /Descent exch def pop
+    /FontHeight Ascent Descent sub def
+
+    % Get the underline position and thickness if they're defined.
+    % Use 1 if they are not defined.
+    currentdict /FontInfo 2 copy known
+    { get
+      /UnderlinePosition 2 copy % <FontInfo> /UP <FontInfo> /UP
+      2 copy known
+      { get }{ pop pop 1 } ifelse
+      0 exch FontMatrix transform exch pop
+      def % <FontInfo>
+
+      /UnderlineThickness 2 copy % <FontInfo> /UT <FontInfo> /UT
+      2 copy known
+      { get }{ pop pop 1 } ifelse
+      0 exch FontMatrix transform exch pop
+      def % <FontInfo>
+      pop % -
+    }{ pop pop
+    } ifelse
+
+    currentdict
+  end 
+} bind def
+
+% composite fonts for ASCII-EUC mixed strings
+% Version 1.2 1/31/1990
+% Original Ken'ichi HANDA (handa@etl.go.jp)
+% Modified Norio Katayama (katayama@rd.nacsis.ac.jp),1998
+% Extend & Fix Koji Nakamaru (maru@on.cs.keio.ac.jp), 1999
+% Anyone can freely copy, modify, distribute this program.
+
+/copyfont {	% font-dic extra-entry-count  copyfont  font-dic
+	1 index maxlength add dict begin
+	{	1 index /FID ne 2 index /UniqueID ne and
+		{def} {pop pop} ifelse
+	} forall
+	currentdict
+	end
+} bind def
+
+/compositefont { % ASCIIFontName EUCFontName RomanScale RomanOffset Rot(T/F) compositefont font
+    /RomanRotation exch def
+    /RomanOffset exch def
+    /RomanScale exch def
+    userdict /fixeucfont_dict known not {
+	userdict begin
+	    /fixeucfont_dict 2 dict begin
+		/UpperByteEncoding [
+		    16#00 1 16#20 { pop 0 } for
+		    16#21 1 16#28 { 16#20 sub } for
+		    16#29 1 16#2F { pop 0 } for
+		    16#30 1 16#74 { 16#27 sub } for
+		    16#75 1 16#FF { pop 0 } for
+		] def
+	        /LowerByteEncoding [
+		    16#00 1 16#A0 { pop /.notdef } for
+		    16#A1 1 16#FE { 16#80 sub 16 2 string cvrs
+				    (cXX) dup 1 4 -1 roll
+				    putinterval cvn } for
+		    /.notdef
+		] def
+		currentdict
+	    end def
+	end
+    } if
+    findfont dup /FontType get 0 eq {
+	14 dict begin
+	    %
+	    % 7+8 bit EUC font
+	    %
+	    12 dict begin
+		/EUCFont exch def
+		/FontInfo (7+8 bit EUC font) readonly def
+		/PaintType 0 def
+		/FontType 0 def
+		/FontMatrix matrix def
+		% /FontName
+		/Encoding fixeucfont_dict /UpperByteEncoding get def
+		/FMapType 2 def
+		EUCFont /WMode known
+		{ EUCFont /WMode get /WMode exch def }
+		{ /WMode 0 def } ifelse
+		/FDepVector [
+		    EUCFont /FDepVector get 0 get
+		    [ 16#21 1 16#28 {} for 16#30 1 16#74 {} for ]
+		    {
+			13 dict begin
+			    /EUCFont EUCFont def
+			    /UpperByte exch 16#80 add def	
+			    % /FontName
+			    /FontInfo (EUC lower byte font) readonly def
+			    /PaintType 0 def
+			    /FontType 3 def
+			    /FontMatrix matrix def
+			    /FontBBox {0 0 0 0} def
+			    /Encoding
+				fixeucfont_dict /LowerByteEncoding get def
+			    % /UniqueID
+			    % /WMode
+			    /BuildChar {
+				gsave
+				exch dup /EUCFont get setfont
+				/UpperByte get
+				2 string
+				dup 0 4 -1 roll put
+				dup 1 4 -1 roll put
+				dup stringwidth setcharwidth
+				0 0 moveto show
+				grestore
+			    } bind def
+			    currentdict
+			end
+			/lowerbytefont exch definefont
+		    } forall
+		] def
+		currentdict
+	    end
+	    /eucfont exch definefont
+	    exch
+	    findfont 1 copyfont dup begin
+		RomanRotation {
+			/FontMatrix FontMatrix
+			[ 0 RomanScale neg RomanScale 0 RomanOffset neg 0 ]
+			matrix concatmatrix def
+		}{
+			/FontMatrix FontMatrix
+			[ RomanScale 0 0 RomanScale 0 RomanOffset ] matrix concatmatrix
+			def
+			/CDevProc
+			    {pop pop pop pop 0 exch -1000 exch 2 div 880} def
+		} ifelse
+	    end
+	    /asciifont exch definefont
+	    exch
+	    /FDepVector [ 4 2 roll ] def
+	    /FontType 0 def
+	    /WMode 0 def
+	    /FMapType 4 def
+	    /FontMatrix matrix def
+	    /Encoding [0 1] def
+	    /FontBBox {0 0 0 0} def
+%	    /FontHeight 1.0 def % XXXX
+	    /FontHeight RomanScale 1.0 ge { RomanScale }{ 1.0 } ifelse def
+	    /Descent -0.3 def   % XXXX
+	    currentdict
+	end
+	/tmpfont exch definefont
+	pop
+	/tmpfont findfont
+    }{
+	pop findfont 0 copyfont
+    } ifelse
+} def	
+
+/slantfont {	% FontName slant-degree  slantfont  font'
+    exch findfont 1 copyfont begin
+    [ 1 0 4 -1 roll 1 0 0 ] FontMatrix exch matrix concatmatrix
+    /FontMatrix exch def
+    currentdict
+    end
+} def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+
+% -------- Some routines to enlight plain b/w printings ---------
+
+% Underline
+% width --
+/dounderline {
+  currentpoint
+  gsave
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    0 rlineto
+    stroke
+  grestore
+} bind def
+
+% Underline a string
+% string --
+/dounderlinestring {
+  stringwidth pop
+  dounderline
+} bind def
+
+/UL {
+  /ul exch store
+} bind def
+
+% Draw a box of WIDTH wrt current font
+% width --
+/dobox {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    stroke
+  grestore
+} bind def
+
+/BX {
+  /bx exch store
+} bind def
+
+% Box a string
+% string --
+/doboxstring {
+  stringwidth pop
+  dobox
+} bind def
+
+%
+% ------------- Color routines ---------------
+%
+/FG /setrgbcolor load def
+
+% Draw the background
+% width --
+/dobackground {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} bind def
+
+% Draw bg for a string
+% string --
+/dobackgroundstring {
+  stringwidth pop
+  dobackground
+} bind def
+
+
+/BG {
+  dup /bg exch store
+  { mark 4 1 roll ] /bgcolor exch store } if
+} bind def
+
+
+/Show {
+  bg { dup dobackgroundstring } if
+  ul { dup dounderlinestring } if
+  bx { dup doboxstring } if
+  show
+} bind def
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T {
+  cw mul x0 add
+  bg { dup currentpoint pop sub dobackground } if
+  ul { dup currentpoint pop sub dounderline } if
+  bx { dup currentpoint pop sub dobox } if
+  y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n {
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+/S {
+  Show
+} bind def
+
+%%BeginResource: procset a2ps-a2ps-hdr 2.0 2
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Function title: prints page header.
+% <ct> <rt> <lt> are passed as argument
+/title { 
+  % 1. Draw the background
+  x v get y v get moveto
+  gsave
+    0 th 2 div neg rmoveto 
+    th setlinewidth
+    0.95 setgray
+    pw 0 rlineto stroke
+  grestore
+  % 2. Border it
+  gsave
+    0.7 setlinewidth
+    pw 0 rlineto
+    0 th neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+  % stk: ct rt lt
+  x v get y v get th sub 1 add moveto
+%%IncludeResource: font Helvetica
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  % 3. The left title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    fnfs 0.8 mul hm rmoveto
+    show			% left title
+  grestore
+  exch
+  % stk: ct ltw rt
+  % 4. the right title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    dup
+    pw exch stringwidth pop fnfs 0.8 mul add sub
+    hm
+    rmoveto
+    show			% right title
+  grestore
+  % stk: ct ltw rtw
+  % 5. the center title
+  gsave
+    pw 3 1 roll
+    % stk: ct pw ltw rtw
+    3 copy 
+    % Move to the center of the left room
+    sub add 2 div hm rmoveto
+    % What is the available space in here?
+    add sub fnfs 0.8 mul sub fnfs 0.8 mul sub
+    % stk: ct space_left
+%%IncludeResource: font Helvetica-Bold
+  fHelvetica-Bold fnfs scalefont setfont
+    cfshow
+  grestore
+} bind def
+
+% Function border: prints virtual page border
+/border { %def
+  gsave				% print four sides
+    0 setgray
+    x v get y v get moveto
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function water: prints a water mark in background
+/water { %def
+  gsave
+    scx scy moveto rotate
+%%IncludeResource: font Times-Bold
+  fTimes-Bold 100 scalefont setfont
+    .97 setgray
+    dup stringwidth pop 2 div neg -50 rmoveto
+    show
+  grestore
+} bind def
+
+% Function rhead: prints the right header
+/rhead {  %def
+  lx ly moveto
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  l-show
+} bind def
+
+% Function footer (cf rf lf -> -)
+/footer {
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  dx dy moveto
+  show
+
+  snx sny moveto
+  l-show
+  
+  fnx fny moveto
+  c-show
+} bind def
+%%EndResource
+%%BeginResource: procset a2ps-black+white-Prolog 2.0 1
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T { 
+  cw mul x0 add y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n { %def
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+}  bind def
+
+/S {
+  Show
+} bind def
+
+/p {
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/sy {
+  false UL
+  false BX
+  fSymbol bfs scalefont setfont
+  Show
+} bind def
+
+/k {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/K {
+  false UL
+  false BX
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/c {
+  false UL
+  false BX
+  fCourier-Oblique bfs scalefont setfont
+  Show
+} bind def
+
+/C {
+  false UL
+  false BX
+  fCourier-BoldOblique bfs scalefont setfont
+  Show 
+} bind def
+
+/l {
+  false UL
+  false BX
+  fHelvetica bfs scalefont setfont
+  Show
+} bind def
+
+/L {
+  false UL
+  false BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show 
+} bind def
+
+/str{
+  false UL
+  false BX
+  fTimes-Roman bfs scalefont setfont
+  Show
+} bind def
+
+/e{
+  false UL
+  true BX
+  fHelvetica-Bold bfs scalefont setfont
+  Show
+} bind def
+
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier
+%%IncludeResource: font Courier-Oblique
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Symbol
+%%IncludeResource: font Courier-BoldOblique
+%%BeginResource: encoding ISO-8859-1Encoding
+/ISO-8859-1Encoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright 
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash 
+/zero /one /two /three /four /five /six /seven 
+/eight /nine /colon /semicolon /less /equal /greater /question 
+/at /A /B /C /D /E /F /G 
+/H /I /J /K /L /M /N /O 
+/P /Q /R /S /T /U /V /W 
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore 
+/quoteleft /a /b /c /d /e /f /g 
+/h /i /j /k /l /m /n /o 
+/p /q /r /s /t /u /v /w 
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section 
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron 
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /bullet 
+/cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown 
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla 
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis 
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply 
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls 
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla 
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis 
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide 
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis 
+] def
+%%EndResource
+% Initialize page description variables.
+/sh 595 def
+/sw 842 def
+/llx 24 def
+/urx 818 def
+/ury 571 def
+/lly 24 def
+/#copies 1 def
+/th 15.000000 def
+/fnfs 11 def
+/bfs 8.005733 def
+/cw 4.803440 def
+
+% Dictionary for ISO-8859-1 support
+/iso1dict 8 dict begin
+  /fCourier ISO-8859-1Encoding /Courier reencode_font
+  /fCourier-Bold ISO-8859-1Encoding /Courier-Bold reencode_font
+  /fCourier-BoldOblique ISO-8859-1Encoding /Courier-BoldOblique reencode_font
+  /fCourier-Oblique ISO-8859-1Encoding /Courier-Oblique reencode_font
+  /fHelvetica ISO-8859-1Encoding /Helvetica reencode_font
+  /fHelvetica-Bold ISO-8859-1Encoding /Helvetica-Bold reencode_font
+  /fTimes-Bold ISO-8859-1Encoding /Times-Bold reencode_font
+  /fTimes-Roman ISO-8859-1Encoding /Times-Roman reencode_font
+currentdict end def
+/bgcolor [ 0 0 0 ] def
+/bg false def
+/ul false def
+/bx false def
+% The font for line numbering
+/f# /Helvetica findfont bfs .6 mul scalefont def
+/fSymbol /Symbol findfont def
+/hm fnfs 0.25 mul def
+/pw
+   cw 81.400000 mul
+def
+/ph
+   501.959430 th add
+def
+/pmw urx llx sub pw 2 mul sub 1 div def
+/pmh 0 def
+/v 0 def
+/x [
+  0
+  dup pmw add pw add
+] def
+/y [
+  pmh ph add 0 mul ph add
+  dup
+] def
+/scx sw 2 div def
+/scy sh 2 div def
+/snx urx def
+/sny lly 2 add def
+/dx llx def
+/dy sny def
+/fnx scx def
+/fny dy def
+/lx snx def
+/ly ury fnfs 0.8 mul sub def
+/sx 0 def
+/tab 8 def
+/x0 0 def
+/y0 0 def
+%%EndSetup
+
+%%Page: (1-2) 1
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.362408 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(/*********************************************************************) p n
+(***********   distortion Effect for the MovingTones pedal   **********) N
+(***********      made by the MovingTones team               **********) N
+(***********              website :\)                         **********) N
+(* Licensed under a Creative Commons Attribution 3.0 Unported License *) N
+(**********************************************************************) N
+(***********  effect adapted from the distortion effect by  ***********) N
+(***********       www.electrosmash.com/pedalshield          **********) N
+(***********  Based on rcarduino.blogspot.com previous work  **********) N
+(**********************************************************************/) N
+() N
+(/* To make this code compile you will need the following libraries:) N
+(        * Adafruit_ST7735) N
+(        * Adafruit_GFX) N
+(        * SPI.h) N
+(        * EEPROM.h */) N
+(// Libraries) N
+(#include "EEPROM.h"                             //) N
+(#include <Adafruit_GFX.h>                       // Core graphics library) N
+(#include <Adafruit_ST7735.h>                    // Hardware-specific library) N
+(#include <SPI.h>                                // Used during debugging to show) N
+( messages on the Serial print) N
+() N
+(// Variables from the original effects' code) N
+(int in_ADC0, in_ADC1;                        // variables for 2 ADCs values \(ADC) N
+(0, ADC1\)) N
+(int POT0, POT1, POT2, out_DAC0, out_DAC1;    // variables for 3 pots \(ADC8, ADC9) N
+(, ADC10\)) N
+(const int LED = 3;                           // LED in pin 3) N
+(const int FOOTSWITCH = 7;                    // Footswitch in pin 7) N
+(const int TOGGLE = 2;                        // Toggle in pin 2) N
+(int upper_threshold, lower_threshold;        // Variable for the distortion effe) N
+(ct) N
+() N
+() N
+(const int SAVE_BUTTON = 1;                  // pins of the arduino ) N
+(const int TFT_CS      = 10; ) N
+(const int TFT_RST     = 8;) N
+(const int TFT_DC      = 9;) N
+() N
+(Adafruit_ST7735 tft = Adafruit_ST7735\(TFT_CS,  TFT_DC, TFT_RST\);  // instantiate) N
+( the screen) N
+() N
+(// New variables) N
+() N
+(const int STANDBY1_MODE = 0;                // effects will only be applied when) N
+( the pedal's footswitch is on HIGH) N
+(const int BUTTON_MODE   = 1;                // sequence of pressing produces: lo) N
+(w-high-low-high or high-low-high-low) N
+(const int STANDBY2_MODE = 2;                // if initially footswitch is HIGH, ) N
+(we will go to BUTTON_MODE) N
+(const int SENSOR_MODE   = 3;                // if intiially footswitch is LOW, w) N
+(e will go to STANDBY1_MODE) N
+() N
+(const int DEBOUNCE_DELAY = 50;              // delay to be applied to debounce) N
+() N
+(const int MIN =     0;                      // range of the parameters p0, p1, p) N
+(2 for the effects' code) N
+(const int MAX =  4096;) N
+() N
+(const int MIN_SCREEN =   0;                  // length of the bar graph to be di) N
+(splayed on the screen) N
+(distortionSensorsV2.ino) (Page 1/9) (d\303\251c. 16, 14 15:39) title
+border
+/v 1 store
+/x0 x v get 3.362408 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(const int MAX_SCREEN = 115;) p n
+() N
+(const int MAX_POT   =  4096;                // readings from the bottons will be) N
+( scaled to this range) N
+(const int MIN_POT   =     0;) N
+(const int LIMIT_POT = 4096;) N
+() N
+(const int MAX_SENSORS = 180;                // sensors send angles in this range) N
+( throught the XBees) N
+(const int MIN_SENSORS = 0;) N
+() N
+(int footswitch_detect;                      // variables to fascilitate the togg) N
+(le) N
+(int footswitch_detect_last;) N
+(int footswitch_detect_previous;) N
+() N
+(int save_button_detect;                     // currently not used) N
+(int save_button_press_time;) N
+(boolean save_button_pressed;) N
+() N
+(int footswitch_mode = STANDBY1_MODE;        // instantiate footswitch_mode to ST) N
+(ANDBY1_MODE) N
+() N
+(int last_debounce_time = 0;                 // variables to fascilitate debounci) N
+(ng) N
+(int last_update_time = 0;) N
+() N
+(int p0 = 0, p1 = 0, p2 = 0;                 // parameters to be used by the code) N
+( to apply effects accordingly) N
+(int p0_old, p1_old, p2_old;) N
+(int MEMORYPOTMOD0 = 0, MEMORYPOTMOD1 = 0, MEMORYPOTMOD2 = 0;) N
+() N
+() N
+() N
+(// Variables needed for the comunication with the ArduinoNano who is sending inf) N
+(ormation in Serial Port) N
+() N
+(byte incomingByte;      //Bytes that are going to be used to add them and to see) N
+( if there is any header between they two.) N
+(byte lastByte;          // This will be just the byte before incomingByte) N
+() N
+() N
+(// Variables to assemble 16-bits ints from bytes received form the Arduino Nano ) N
+(through the XBees) N
+(// !!! Note that int on an Arduino DUE is 32-bit but in many other smaller Ardui) N
+(nos it is 16-bit) N
+(// Thus to avoid negative-wrapping-around-to-positive, use int16_t for all int v) N
+(ariables in this program) N
+(int16_t currentInt;   ) N
+(int16_t int1;) N
+(byte byteArray[3];) N
+(int16_t angles[3];      // the three angles read by the sensor as received from ) N
+(XBees) N
+(int16_t mask;) N
+() N
+() N
+() N
+(void setup\(\)) N
+({) N
+() N
+(  //Configuration from the original effect from pedalShield) N
+() N
+(distortionSensorsV2.ino) (Page 2/9) (d\303\251c. 16, 14 15:39) title
+border
+grestore
+(Printed by Viejitos) rhead
+(distortionSensorsV2.ino) (1/5) (mardi d\303\251cembre 16, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3-4) 2
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.362408 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(  //ADC Configuration) p n
+(  ADC->ADC_MR |= 0x80;              // DAC in free running mode.) N
+(  ADC->ADC_CR = 2;                  // Starts ADC conversion.) N
+(  ADC->ADC_CHER = 0xFFFF;           // Enable all ADC channels) N
+() N
+(  //DAC Configuration) N
+(  analogWrite\(DAC0, 0\);             // Enables DAC0) N
+(  analogWrite\(DAC1, 0\);             // Enables DAC1) N
+() N
+(  // We are going to read from the FootSwitch to make our 3 modes.) N
+() N
+(  pinMode\(FOOTSWITCH, INPUT\);       // Enables to read from the footswitch) N
+(  // pinMode\(SAVE_BUTTON, INPUT\);) N
+(  pinMode\(LED, OUTPUT\);) N
+() N
+(  // record the state of the footswitch when turned on) N
+() N
+(  /*HERE WE SHOULD DETECT IF HI IS ALEREADY IN BYPASSMODE OR NOT. AND THEN START) N
+( FROM HIS ORIGINAL STATE) N
+(  ******************************************************************************) N
+(*************************/) N
+(  footswitch_mode = digitalRead\(FOOTSWITCH\);) N
+(  footswitch_detect_last = digitalRead\(FOOTSWITCH\);) N
+(  footswitch_detect_previous = footswitch_detect_last;) N
+() N
+(  //Screen \(add description and comments\)) N
+() N
+(  tft.initR\(INITR_BLACKTAB\);) N
+(  tft.fillScreen\(ST7735_BLACK\);) N
+() N
+(// Here we set the screen parameters: orientation, text size, color and text dis) N
+(play) N
+(  tft.setRotation\(-1\);             ) N
+(  tft.setTextSize\(2\);) N
+(  tft.fillScreen\(ST7735_WHITE\);) N
+(  tft.setTextColor\(ST7735_RED\);) N
+(  tft.println\("*Distortion*"\);) N
+(  tft.println\(""\);) N
+(  tft.println\("          P1"\);) N
+(  tft.println\(""\);) N
+(  tft.println\("          P2"\);) N
+(  tft.println\(""\);) N
+(  tft.println\("          P3"\);) N
+() N
+() N
+(  p0_old = p0;) N
+(  p1_old = p1;) N
+(  p2_old = p2;) N
+() N
+() N
+(  // Initialize the Serial ports for message transmissions) N
+(  Serial.begin\(57600\);                   //Initialize the port for comunication ) N
+(with the PC to send messages useful for coding \(Serial\)) N
+(  Serial1.begin\(57600\);                  //Initialize the port for comunication ) N
+(with the XBee \(Serial1\)) N
+() N
+(  // From XBee) N
+(  lastByte = \(byte\)0;     // We inicialize the lastBythe with 0 so it can make i) N
+(ts first comparison.) N
+() N
+(}) N
+() N
+(distortionSensorsV2.ino) (Page 3/9) (d\303\251c. 16, 14 15:39) title
+border
+/v 1 store
+/x0 x v get 3.362408 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(void loop\(\)) p n
+({) N
+() N
+(  readFootSwitch\(\);                                  //We read the FootWwitch St) N
+(ate and we see if it's pressed.) N
+(  updateScreen\(\);                                    //We upload the screen info) N
+(rmation) N
+(  // readSaveButton\(\);) N
+() N
+(  // From the original effect code) N
+() N
+(  // Read the ADCs) N
+(  while \(\(ADC->ADC_ISR & 0x1CC0\) != 0x1CC0\); // wait for ADC 0, 1, 8, 9, 10 conv) N
+(ersion complete.) N
+(  in_ADC0 = ADC->ADC_CDR[7];             // read data from ADC0) N
+(  in_ADC1 = ADC->ADC_CDR[6];             // read data from ADC1) N
+() N
+() N
+(  // POT0=ADC->ADC_CDR[10];                 // read data from ADC8) N
+(  // POT1=ADC->ADC_CDR[11];                 // read data from ADC9) N
+(  // POT2=ADC->ADC_CDR[12];                 // read data from ADC10) N
+() N
+() N
+(  // Changing the parameters values depending of the mode) N
+() N
+(  switch \(footswitch_mode\) {) N
+(    case STANDBY1_MODE:) N
+(    case STANDBY2_MODE:) N
+(      Serial.print\("Standby Mode "\);) N
+(      break;) N
+(    case BUTTON_MODE:) N
+(      Serial.print\("Button Mode: "\);) N
+(      readPotentiometer\(\);) N
+(      break;) N
+() N
+(    case SENSOR_MODE:) N
+(      Serial.print\("Sensor Mode: "\);) N
+(      readSensor\(\);) N
+(      break;) N
+() N
+(    default:) N
+(      Serial.print\("Invalid state "\);) N
+(  }) N
+() N
+() N
+(  // We display the parameters values on the computer screen) N
+(  Serial.print\(p0\);) N
+(  Serial.print\("|"\);) N
+(  Serial.print\(p1\);) N
+(  Serial.print\("|"\);) N
+(  Serial.print\(p2\);) N
+(  Serial.print\("|"\);) N
+() N
+(  Serial.println\(""\);) N
+() N
+(  // Code for the effect 'distortion' - distortion does not use parameter p1) N
+(  // Code from the original effect: This is the effect, taking the parameters p0) N
+(, p1 and p2) N
+(  upper_threshold = map\(p0, 0, 4095, 4095, 2047\);) N
+(  lower_threshold = map\(p0, 0, 4095, 0000, 2047\);) N
+() N
+(  if \(in_ADC0 >= upper_threshold\) in_ADC0 = upper_threshold;) N
+(distortionSensorsV2.ino) (Page 4/9) (d\303\251c. 16, 14 15:39) title
+border
+grestore
+(Printed by Viejitos) rhead
+(distortionSensorsV2.ino) (2/5) (mardi d\303\251cembre 16, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (5-6) 3
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.362408 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(  else if \(in_ADC0 < lower_threshold\)  in_ADC0 = lower_threshold;) p n
+() N
+(  if \(in_ADC1 >= upper_threshold\) in_ADC1 = upper_threshold;) N
+(  else if \(in_ADC1 < lower_threshold\)  in_ADC1 = lower_threshold;) N
+() N
+(  //adjust the volume with POT2) N
+(  out_DAC0 = map\(in_ADC0, 0, 4095, 1, p2\);) N
+(  out_DAC1 = map\(in_ADC1, 0, 4095, 1, p2\);) N
+() N
+(  //Write the DACs) N
+(  dacc_set_channel_selection\(DACC_INTERFACE, 0\);          //select DAC channel 0) N
+(  dacc_write_conversion_data\(DACC_INTERFACE, out_DAC0\);   //write on DAC) N
+(  dacc_set_channel_selection\(DACC_INTERFACE, 1\);          //select DAC channel 1) N
+(  dacc_write_conversion_data\(DACC_INTERFACE, out_DAC1\);   //write on DAC) N
+(}) N
+() N
+() N
+() N
+(// reading the FOOTSWITCH on the pedalShield and implement a debouncing mechanis) N
+(m) N
+(void readFootSwitch\(\) {) N
+(  footswitch_detect = digitalRead\(FOOTSWITCH\);) N
+() N
+(  if \(footswitch_detect != footswitch_detect_last\) {) N
+(    last_debounce_time = millis\(\);) N
+(  }) N
+() N
+(  if \(footswitch_detect != footswitch_detect_previous && millis\(\) - last_debounc) N
+(e_time > DEBOUNCE_DELAY\) {) N
+(    footswitch_mode = \(footswitch_mode + 1\) % 4;) N
+(    footswitch_detect_previous = footswitch_detect;) N
+(  }) N
+() N
+(  footswitch_detect_last = footswitch_detect; // we detect changes in the FOOTSW) N
+(ITCH by comparing these two variables) N
+(}) N
+() N
+() N
+(void readSaveButton\(\) {) N
+(  save_button_detect = digitalRead\(SAVE_BUTTON\);) N
+() N
+(  if \(save_button_detect == HIGH\) {) N
+(    last_debounce_time = millis\(\);) N
+() N
+(    if \(save_button_pressed = true\) {) N
+(      if \(millis\(\) - save_button_press_time > 3000\) {) N
+(        EEPROM.write\(0, p0\);) N
+(        EEPROM.write\(1, p1\);) N
+(        EEPROM.write\(2, p2\);) N
+(      } else {) N
+(        p0 = EEPROM.read\(0\);) N
+(        p1 = EEPROM.read\(1\);) N
+(        p2 = EEPROM.read\(2\);) N
+(      }) N
+() N
+(      save_button_pressed = false;) N
+(    }) N
+(  }) N
+() N
+(  if \(save_button_detect == LOW && millis\(\) - last_debounce_time > DEBOUNCE_DELA) N
+(Y && save_button_pressed == false\) {) N
+(    save_button_press_time = millis\(\);) N
+(distortionSensorsV2.ino) (Page 5/9) (d\303\251c. 16, 14 15:39) title
+border
+/v 1 store
+/x0 x v get 3.362408 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    save_button_pressed = true;) p n
+(  }) N
+(}) N
+() N
+(void readPotentiometer\(\) {) N
+(  ) N
+(  int POTMOD0 = ADC->ADC_CDR[2];                        //reading first potentio) N
+(meter) N
+(  POT0 = updatePot\(POT0, MEMORYPOTMOD0, POTMOD0\);       //update first parameter) N
+( using current reading of potentiometer) N
+(  p0 = POT0;                                            //update globally) N
+(  MEMORYPOTMOD0 = POTMOD0;                              //now the potentiometer ) N
+(reading becomes the 'previous' reading) N
+(  //Serial.println\(p0\);) N
+(  int POTMOD1 = ADC->ADC_CDR[1]; //read from pot1       //reading second potenti) N
+(ometer) N
+(  POT1 = updatePot\(POT1, MEMORYPOTMOD1, POTMOD1\);       //update second paramete) N
+(r using current reading of potentiometer) N
+(  p1 = POT1;                                            //update globally) N
+(  MEMORYPOTMOD1 = POTMOD1;                              //now the potentiometer ) N
+(reading becomes the 'previous' reading) N
+(  ) N
+(  int POTMOD2 = ADC->ADC_CDR[0]; //read from pot2       //reading third potentio) N
+(meter) N
+(  POT2 = updatePot\(POT2, MEMORYPOTMOD2, POTMOD2\);       //update third parameter) N
+( using current reading of potentiometer) N
+(  p2 = POT2;                                            //update globally) N
+(  MEMORYPOTMOD2 = POTMOD2;                              //now the potentiometer ) N
+(reading becomes the 'previous' reading) N
+(}) N
+() N
+() N
+(int updatePot\(int POT, int MEMORYPOTMOD, int POTMOD\) {   //update the given para) N
+(meter) N
+(  int VALUE = 0;                                         //Value to be added to ) N
+(previous values of parameters) N
+(  if \(\(POTMOD - MEMORYPOTMOD\) < -0.9 * MAX_POT\) {        // case of more than on) N
+(e complete turn in the positive direction) N
+(    VALUE = MAX_POT + POTMOD - MEMORYPOTMOD;) N
+() N
+(    if \(\(POT + VALUE\) > LIMIT_POT\) {) N
+(      POT = LIMIT_POT;) N
+(    }) N
+(    else {) N
+(      POT = POT + VALUE ;) N
+(    }) N
+(  }) N
+(  else if \(\(POTMOD - MEMORYPOTMOD\) > 0.9 * MAX_POT\) {   // case of more than one) N
+( complete turn in the negative direction) N
+(    VALUE = - \(MAX_POT\) + POTMOD - MEMORYPOTMOD;) N
+(    if \(\(POT + VALUE\) < MIN_POT\) {) N
+(      POT = MIN_POT;) N
+(    }) N
+(    else {) N
+(      POT = POT + VALUE ;) N
+(    }) N
+(  }) N
+(  else if \(\(POTMOD - MEMORYPOTMOD\) > 0\) {               //case of less than one ) N
+(complete turn in the positive direction) N
+(    VALUE = POTMOD - MEMORYPOTMOD;) N
+(    if \(\(POT + VALUE\) > LIMIT_POT\) {) N
+(      POT = LIMIT_POT;) N
+(distortionSensorsV2.ino) (Page 6/9) (d\303\251c. 16, 14 15:39) title
+border
+grestore
+(Printed by Viejitos) rhead
+(distortionSensorsV2.ino) (3/5) (mardi d\303\251cembre 16, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (7-8) 4
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.362408 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    }) p n
+(    else {) N
+(      POT = POT + VALUE ;) N
+(    }) N
+(  }) N
+(  else if \(\(POTMOD - MEMORYPOTMOD\) < 0\) {               //case of less than one ) N
+(complete turn in the negative direction) N
+(    VALUE = POTMOD - MEMORYPOTMOD;//+POTSENSOR) N
+(    if \(\(POT + VALUE\) < MIN_POT\) {) N
+(      POT = MIN_POT;) N
+(    }) N
+(    else {) N
+(      POT = POT + VALUE ;) N
+(    }) N
+(  }) N
+(  return POT;) N
+(}) N
+() N
+() N
+(// Read the 3 angles transmitted by the XBees if there is message available) N
+(// The 3 angles \(6 bytes\) are always sent together following an int header == -2) N
+(1846) N
+(void readSensor\(\) {) N
+(  if \(Serial1.available\(\)\) {) N
+() N
+(    boolean header = false;                     // before a valid header is dete) N
+(cted, header is set to false) N
+(    lastByte = Serial1.read\(\);                  // read one byte) N
+() N
+(    while \(Serial1.available\(\) && !header\) {) N
+(      incomingByte = Serial1.read\(\);    // read another byte) N
+() N
+(      int1 = assembleInt\(lastByte, incomingByte\);  // each int is 16-bit, so we ) N
+(assemble the incoming int by applying bit-wise operations on the two bytes) N
+() N
+(      // Serial.println\("waiting"\); // uncomment this line to see how long it ta) N
+(kes to clear the buffer) N
+() N
+(      if \(int1 == -21846\) {) N
+(        header = true; // a correct header is detected) N
+(      }) N
+(      else {) N
+(        lastByte = incomingByte; // if there is not any header we take our secon) N
+(d byte as our first byte, to then make a comparison with the following) N
+(      }) N
+(    }) N
+() N
+(    // if the header is detected, the next 6 bytes are the 3 values of the angle) N
+(s \(each int is 16-bit\)) N
+(    readAngles\(\);) N
+(  }) N
+(}) N
+() N
+(// assemble an int from the two bytes just read into byteArray) N
+(int16_t assembleInt\(byte byte1, byte byte2\) {) N
+() N
+(  currentInt = \(int16_t\)byte1 << 8;) N
+(  mask = 0xFF;) N
+(  mask = mask & \(int16_t\)byte2; // mask the first 8 bit to zero, in case the byt) N
+(e is sign-extended) N
+() N
+(  currentInt = currentInt | mask;) N
+(distortionSensorsV2.ino) (Page 7/9) (d\303\251c. 16, 14 15:39) title
+border
+/v 1 store
+/x0 x v get 3.362408 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+(  // the byte1*256 + byte2 before is wrong because byte2 had been sign-extended ) N
+(- have to mask the first 8 bits) N
+(  //mask = 0xFF;) N
+(  //currentInt = byte1*256 + \(byte2 & mask\);) N
+(  return currentInt;) N
+(}) N
+() N
+(//  Read the angles from the next 6 bytes \(2 bytes for each 16-bit int angle\)) N
+(void readAngles\(\) {) N
+() N
+(  // Expect 3 angles) N
+(  for \(int i = 0; i < 3; i++\) {) N
+() N
+(    /* We know that we should have a message in the buffer, \(because we have rec) N
+(onized an header\)) N
+(    but, it can happen that the pedal tries to read the angles form the Serial b) N
+(efore the sensor) N
+(    manage to send him the angles \(it can also be because of the data transmissi) N
+(on speed v/s) N
+(    the pedal's processor speed\)) N
+(    so here we wait for the next message if it's necessary) N
+() N
+(    TODO: Use a timout!!*/) N
+() N
+(    while \(!Serial1.available\(\)\) {) N
+(      Serial.println\("----Im waiting111111-"\);) N
+(    }) N
+() N
+(    byteArray[0] = Serial1.read\(\);                        // We read the fist by) N
+(te) N
+() N
+() N
+(    while \(!Serial1.available\(\)\) {                        // We wait again in ca) N
+(se it is necesary  TODO: Use a timout!!) N
+() N
+(      Serial.println\("----Im waiting222222-"\);) N
+(    }) N
+() N
+(    byteArray[1] = Serial1.read\(\);                        // We read the second ) N
+(byte) N
+(    angles[i] = assembleInt\(byteArray[0], byteArray[1]\);  // We construct the an) N
+(gle using both bytes) N
+(  }) N
+() N
+(  /*Sometimes, \(and I don't know yet why.. and this is a ToDo:try to prevent thi) N
+(s from another way\)) N
+(    there are some messages that are eathier read badly or sended badly.. so we ) N
+(delete any message with an) N
+(    incorrect angle*/) N
+() N
+(  if \(angles[0] >= 0 && angles[0] <= MAX_SENSORS && angles[1] >= 0 && angles[1] ) N
+(<= MAX_SENSORS && angles[2] >= 0 && angles[2] <= MAX_SENSORS\) {) N
+() N
+(    // Writing the angles into the global variables) N
+(    p0 = angles[0] * 4096 / MAX_SENSORS;              //Here we scale the angle ) N
+(into our effect scale. here is until 4096) N
+(    p1 = angles[1] * 4096 / MAX_SENSORS;) N
+(    p2 = angles[2] * 4096 / MAX_SENSORS;) N
+() N
+() N
+() N
+(distortionSensorsV2.ino) (Page 8/9) (d\303\251c. 16, 14 15:39) title
+border
+grestore
+(Printed by Viejitos) rhead
+(distortionSensorsV2.ino) (4/5) (mardi d\303\251cembre 16, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (9) 5
+%%BeginPageSetup
+/pagesave save def
+sh 0 translate 90 rotate
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 3.362408 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(  }) p n
+(}) N
+() N
+(void updateScreen\(\) {) N
+(  //  only update the screen every 0.1 seconds) N
+(  if \(millis\(\) - last_update_time > 100\) {) N
+(    last_update_time = millis\(\);) N
+(    ) N
+(    //  if the new parameter is bigger than the old one, add a blue bar) N
+(    //  else add a white bar. this scheme is applied for every parameter.) N
+(    if \(p0_old < p0\) {) N
+(      tft.fillRoundRect\(MIN_SCREEN, 32, map\(p0, MIN, MAX, MIN_SCREEN, MAX_SCREEN) N
+(\), 16, 0, ST7735_BLUE\);) N
+(    }) N
+(    if \(p0_old > p0\) {) N
+(      tft.fillRoundRect\(map\(p0, MIN, MAX, MIN_SCREEN, MAX_SCREEN\), 32, map\(p0, M) N
+(IN, MAX, MAX_SCREEN, MIN_SCREEN\), 16, 0, ST7735_WHITE\);) N
+(    }) N
+() N
+(    p0_old = p0;) N
+() N
+() N
+(    if \(p1_old < p1\) {) N
+(      tft.fillRoundRect\(MIN_SCREEN, 64, map\(p1, MIN, MAX, MIN_SCREEN, MAX_SCREEN) N
+(\), 16, 0, ST7735_BLUE\);) N
+(    }) N
+(    if \(p1_old > p1\) {) N
+(      tft.fillRoundRect\(map\(p1, MIN, MAX, MIN_SCREEN, MAX_SCREEN\), 64, map\(p1, M) N
+(IN, MAX, MAX_SCREEN, MIN_SCREEN\), 16, 0, ST7735_WHITE\);) N
+(    }) N
+() N
+(    p1_old = p1;) N
+() N
+(    if \(p2_old < p2\) {) N
+(      tft.fillRoundRect\(MIN_SCREEN, 96, map\(p2, MIN, MAX, MIN_SCREEN, MAX_SCREEN) N
+(\), 16, 0, ST7735_BLUE\);) N
+(    }) N
+(    if \(p2_old > p2\) {) N
+(      tft.fillRoundRect\(map\(p2, MIN, MAX, MIN_SCREEN, MAX_SCREEN\), 96, map\(p2, M) N
+(IN, MAX, MAX_SCREEN, MIN_SCREEN\), 16, 0, ST7735_WHITE\);) N
+(    }) N
+() N
+(    p2_old = p2;) N
+(  }) N
+(}) N
+(distortionSensorsV2.ino) (Page 9/9) (d\303\251c. 16, 14 15:39) title
+border
+grestore
+(Printed by Viejitos) rhead
+(distortionSensorsV2.ino) (5/5) (mardi d\303\251cembre 16, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+
+%%Trailer
+end
+%%EOF

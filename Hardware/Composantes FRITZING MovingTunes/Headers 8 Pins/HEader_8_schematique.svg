@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Fritzing (http://www.fritzing.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.2"
+   x="0in"
+   y="0in"
+   width="40.147621"
+   height="77.77681"
+   viewBox="0 0 32.118097 62.22145"
+   id="svg4073"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="HEader_8_schematique.svg">
+  <metadata
+     id="metadata4251">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4249" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1280"
+     inkscape:window-height="776"
+     id="namedview4247"
+     showgrid="false"
+     inkscape:zoom="3.5150544"
+     inkscape:cx="30.61707"
+     inkscape:cy="23.569058"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="schematic"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <g
+     partID="17634980"
+     id="g4075"
+     transform="translate(0.24242633,0.09644822)">
+    <g
+       id="schematic">
+      <rect
+         width="17.334681"
+         x="14.348295"
+         y="0.092294961"
+         height="61.836365"
+         id="rect4078"
+         style="fill:#ffffff;stroke:#000000;stroke-width:0.3645899;stroke-linecap:round;stroke-linejoin:round" />
+      <line
+         id="connector16pin"
+         y1="7.5599999"
+         x1="0.21600001"
+         y2="7.5599999"
+         x2="14.616"
+         style="fill:none;stroke:#787878;stroke-width:0.75;stroke-linecap:round" />
+      <g
+         points="0.216,7.56,0.216,7.56,0.216,7.56"
+         id="connector16terminal"
+         style="fill:none" />
+      <g
+         id="g4082">
+        <g
+           transform="translate(15.9121,8.4248)"
+           id="g4084">
+          <text
+             font-size="3.5"
+             id="text4086"
+             style="font-size:3.5px;fill:#787878;font-family:DroidSans">1</text>
+        </g>
+      </g>
+      <line
+         id="connector19pin"
+         y1="14.76"
+         x1="0.21600001"
+         y2="14.76"
+         x2="14.616"
+         style="fill:none;stroke:#787878;stroke-width:0.75;stroke-linecap:round" />
+      <g
+         points="0.216,14.76,0.216,14.76,0.216,14.76"
+         id="connector19terminal"
+         style="fill:none" />
+      <g
+         id="g4090">
+        <g
+           transform="translate(15.9121,15.624)"
+           id="g4092">
+          <text
+             font-size="3.5"
+             id="text4094"
+             style="font-size:3.5px;fill:#787878;font-family:DroidSans">2</text>
+        </g>
+      </g>
+      <line
+         id="connector18pin"
+         y1="21.959999"
+         x1="0.21600001"
+         y2="21.959999"
+         x2="14.616"
+         style="fill:none;stroke:#787878;stroke-width:0.75;stroke-linecap:round" />
+      <g
+         points="0.216,21.96,0.216,21.96,0.216,21.96"
+         id="connector18terminal"
+         style="fill:none" />
+      <g
+         id="g4098">
+        <g
+           transform="translate(15.9121,22.8252)"
+           id="g4100">
+          <text
+             font-size="3.5"
+             id="text4102"
+             style="font-size:3.5px;fill:#787878;font-family:DroidSans">3</text>
+        </g>
+      </g>
+      <line
+         id="connector4pin"
+         y1="29.16"
+         x1="0.21600001"
+         y2="29.16"
+         x2="14.616"
+         style="fill:none;stroke:#787878;stroke-width:0.75;stroke-linecap:round" />
+      <g
+         points="0.216,29.16,0.216,29.16,0.216,29.16"
+         id="connector4terminal"
+         style="fill:none" />
+      <g
+         id="g4106">
+        <g
+           transform="translate(15.9121,30.0244)"
+           id="g4108">
+          <text
+             font-size="3.5"
+             id="text4110"
+             style="font-size:3.5px;fill:#787878;font-family:DroidSans">4</text>
+        </g>
+      </g>
+      <line
+         id="connector5pin"
+         y1="36.360001"
+         x1="0.21600001"
+         y2="36.360001"
+         x2="14.616"
+         style="fill:none;stroke:#787878;stroke-width:0.75;stroke-linecap:round" />
+      <g
+         points="0.216,36.36,0.216,36.36,0.216,36.36"
+         id="connector5terminal"
+         style="fill:none" />
+      <g
+         id="g4114">
+        <g
+           transform="translate(15.9121,37.2236)"
+           id="g4116">
+          <text
+             font-size="3.5"
+             id="text4118"
+             style="font-size:3.5px;fill:#787878;font-family:DroidSans">5</text>
+        </g>
+      </g>
+      <line
+         id="connector6pin"
+         y1="43.560001"
+         x1="0.21600001"
+         y2="43.560001"
+         x2="14.616"
+         style="fill:none;stroke:#787878;stroke-width:0.75;stroke-linecap:round" />
+      <g
+         points="0.216,43.56,0.216,43.56,0.216,43.56"
+         id="connector6terminal"
+         style="fill:none" />
+      <g
+         id="g4122">
+        <g
+           transform="translate(15.9121,44.4248)"
+           id="g4124">
+          <text
+             font-size="3.5"
+             id="text4126"
+             style="font-size:3.5px;fill:#787878;font-family:DroidSans">6</text>
+        </g>
+      </g>
+      <line
+         id="connector7pin"
+         y1="50.759998"
+         x1="0.21600001"
+         y2="50.759998"
+         x2="14.616"
+         style="fill:none;stroke:#787878;stroke-width:0.75;stroke-linecap:round" />
+      <g
+         points="0.216,50.76,0.216,50.76,0.216,50.76"
+         id="connector7terminal"
+         style="fill:none" />
+      <g
+         id="g4130">
+        <g
+           transform="translate(15.9121,51.624)"
+           id="g4132">
+          <text
+             font-size="3.5"
+             id="text4134"
+             style="font-size:3.5px;fill:#787878;font-family:DroidSans">7</text>
+        </g>
+      </g>
+      <line
+         id="connector8pin"
+         y1="57.959999"
+         x1="0.21600001"
+         y2="57.959999"
+         x2="14.616"
+         style="fill:none;stroke:#787878;stroke-width:0.75;stroke-linecap:round" />
+      <g
+         points="0.216,57.96,0.216,57.96,0.216,57.96"
+         id="connector8terminal"
+         style="fill:none" />
+      <g
+         id="g4138">
+        <g
+           transform="translate(15.9121,58.8252)"
+           id="g4140">
+          <text
+             font-size="3.5"
+             id="text4142"
+             style="font-size:3.5px;fill:#787878;font-family:DroidSans">8</text>
+        </g>
+      </g>
+      <g
+         points="0.216,65.16,0.216,65.16,0.216,65.16"
+         id="connector9terminal"
+         style="fill:none" />
+      <g
+         points="0.216,72.36,0.216,72.36,0.216,72.36"
+         id="connector10terminal"
+         style="fill:none" />
+      <g
+         points="0.216,79.56,0.216,79.56,0.216,79.56"
+         id="connector11terminal"
+         style="fill:none" />
+      <g
+         points="0.216,93.96,0.216,93.96,0.216,93.96"
+         id="connector1terminal"
+         style="fill:none" />
+      <g
+         points="0.216,86.761,0.216,86.761,0.216,86.761"
+         id="connector2terminal"
+         style="fill:none" />
+      <g
+         points="0.216,101.16,0.216,101.16,0.216,101.16"
+         id="connector15terminal"
+         style="fill:none" />
+      <g
+         points="0.216,108.36,0.216,108.36,0.216,108.36"
+         id="connector14terminal"
+         style="fill:none" />
+      <g
+         points="0.216,115.56,0.216,115.56,0.216,115.56"
+         id="connector3terminal"
+         style="fill:none" />
+      <g
+         points="0.216,122.761,0.216,122.761,0.216,122.761"
+         id="connector12terminal"
+         style="fill:none" />
+      <g
+         points="0.216,129.96,0.216,129.96,0.216,129.96"
+         id="connector17terminal"
+         style="fill:none" />
+      <g
+         points="0.216,137.16,0.216,137.16,0.216,137.16"
+         id="connector0terminal"
+         style="fill:none" />
+      <g
+         points="0.216,144.36,0.216,144.36,0.216,144.36"
+         id="connector13terminal"
+         style="fill:none" />
+      <g
+         transform="matrix(0,1,-1,0,23.354845,26.186362)"
+         id="g4240">
+        <text
+           id="label_2_"
+           font-size="4.25"
+           style="font-size:6.49151659px;font-family:DroidSans"
+           x="-19.687532"
+           y="1.5348427"
+           transform="scale(0.57643666,1.734796)">Connecteur 8 Pins</text>
+      </g>
+      <g
+         transform="translate(32.5078,78.458)"
+         id="g4243" />
+    </g>
+  </g>
+</svg>

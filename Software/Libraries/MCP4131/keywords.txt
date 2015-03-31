@@ -1,0 +1,37 @@
+#######################################
+# Syntax Coloring Map For MCP4131
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+MCP4131	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+initTCON	KEYWORD2
+readTCON	KEYWORD2
+readStatus	KEYWORD2
+increment	KEYWORD2
+decrement	KEYWORD2
+setTap	KEYWORD2
+Tcon_Reg	KEYWORD2
+Status_Reg	KEYWORD2
+readTap	KEYWORD2
+Wiper_Reg	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+MCP4131_MIN	LITERAL1
+MCP4131_MAX	LITERAL1
+
