@@ -2,6 +2,7 @@ pedalSHIELD
 ===========
 
 Check from Esteban
+Deuxieme chek from Esteban
 
 pedalSHIELD is an Arduino Open Source guitar pedal made for guitarists, hackers and programmers. Users can program their own effects in C/C++ or download ready effects from the online library.
 
